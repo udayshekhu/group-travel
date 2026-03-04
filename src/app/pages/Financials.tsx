@@ -25,9 +25,9 @@ const defaultExpenses: Expense[] = [
     totalAmount: 1200,
     paidBy: "Jordan",
     splits: [
-      { name: "Sam", amount: 300, paid: 0 },
-      { name: "Alex", amount: 300, paid: 0 },
-      { name: "Taylor", amount: 300, paid: 0 },
+      { name: "Sam", amount: 400, paid: 0 },
+      { name: "Alex", amount: 400, paid: 0 },
+      { name: "Taylor", amount: 400, paid: 0 },
     ],
     date: "March 1, 2026",
   },
@@ -37,9 +37,9 @@ const defaultExpenses: Expense[] = [
     totalAmount: 2400,
     paidBy: "Alex",
     splits: [
-      { name: "Jordan", amount: 600, paid: 0 },
-      { name: "Sam", amount: 600, paid: 0 },
-      { name: "Taylor", amount: 600, paid: 0 },
+      { name: "Jordan", amount: 800, paid: 0 },
+      { name: "Sam", amount: 800, paid: 0 },
+      { name: "Taylor", amount: 800, paid: 0 },
     ],
     date: "February 28, 2026",
   },
@@ -49,9 +49,9 @@ const defaultExpenses: Expense[] = [
     totalAmount: 800,
     paidBy: "Sam",
     splits: [
-      { name: "Jordan", amount: 200, paid: 0 },
-      { name: "Alex", amount: 200, paid: 0 },
-      { name: "Taylor", amount: 200, paid: 0 },
+      { name: "Jordan", amount: 800 / 3, paid: 0 },
+      { name: "Alex", amount: 800 / 3, paid: 0 },
+      { name: "Taylor", amount: 800 / 3, paid: 0 },
     ],
     date: "March 2, 2026",
   },
@@ -60,15 +60,19 @@ const defaultExpenses: Expense[] = [
 export default function Financials() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [showAddExpense, setShowAddExpense] = useState(false);
-  const [currentTrip, setCurrentTrip] = useState({ members: ["Jordan", "Sam", "Alex", "Taylor"] });
-  
+  const [currentTrip, setCurrentTrip] = useState({
+    members: ["Jordan", "Sam", "Alex", "Taylor"],
+  });
+
   // Form state
   const [expenseTitle, setExpenseTitle] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
   const [expenseDate, setExpenseDate] = useState("");
   const [paidBy, setPaidBy] = useState("");
   const [splitType, setSplitType] = useState<"equal" | "custom">("equal");
-  const [customSplits, setCustomSplits] = useState<{ [key: string]: string }>({});
+  const [customSplits, setCustomSplits] = useState<{ [key: string]: string }>(
+    {},
+  );
 
   useEffect(() => {
     const storedExpenses = localStorage.getItem("tripExpenses");
@@ -95,7 +99,11 @@ export default function Financials() {
   }, []);
 
   const addExpense = () => {
-    if (!expenseTitle.trim() || !expenseAmount || parseFloat(expenseAmount) <= 0) {
+    if (
+      !expenseTitle.trim() ||
+      !expenseAmount ||
+      parseFloat(expenseAmount) <= 0
+    ) {
       alert("Please fill in expense name and amount");
       return;
     }
@@ -106,19 +114,19 @@ export default function Financials() {
     }
 
     const total = parseFloat(expenseAmount);
-    const splitMembers = currentTrip.members.filter(m => m !== paidBy);
+    const splitMembers = currentTrip.members.filter((m) => m !== paidBy);
     let splits: Split[] = [];
 
     if (splitType === "equal") {
       const perPerson = total / splitMembers.length;
-      splits = splitMembers.map(member => ({
+      splits = splitMembers.map((member) => ({
         name: member,
         amount: perPerson,
         paid: 0,
       }));
     } else {
       // Custom splits
-      splits = splitMembers.map(member => ({
+      splits = splitMembers.map((member) => ({
         name: member,
         amount: parseFloat(customSplits[member] || "0"),
         paid: 0,
@@ -127,7 +135,9 @@ export default function Financials() {
       // Validate custom splits total equals expense amount
       const customTotal = splits.reduce((sum, split) => sum + split.amount, 0);
       if (Math.abs(customTotal - total) > 0.01) {
-        alert(`Custom splits ($${customTotal.toFixed(2)}) don't match total expense ($${total.toFixed(2)})`);
+        alert(
+          `Custom splits ($${customTotal.toFixed(2)}) don't match total expense ($${total.toFixed(2)})`,
+        );
         return;
       }
     }
@@ -138,7 +148,13 @@ export default function Financials() {
       totalAmount: total,
       paidBy,
       splits,
-      date: expenseDate || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      date:
+        expenseDate ||
+        new Date().toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        }),
     };
 
     const updatedExpenses = [newExpense, ...expenses];
@@ -155,21 +171,21 @@ export default function Financials() {
   };
 
   const updateCustomSplit = (member: string, value: string) => {
-    setCustomSplits(prev => ({
+    setCustomSplits((prev) => ({
       ...prev,
       [member]: value,
     }));
   };
 
   const handlePayment = (expenseId: string, payer: string, amount: number) => {
-    const updatedExpenses = expenses.map(expense => {
+    const updatedExpenses = expenses.map((expense) => {
       if (expense.id === expenseId) {
         return {
           ...expense,
-          splits: expense.splits.map(split =>
+          splits: expense.splits.map((split) =>
             split.name === payer
               ? { ...split, paid: Math.min(split.paid + amount, split.amount) }
-              : split
+              : split,
           ),
         };
       }
@@ -179,59 +195,12 @@ export default function Financials() {
     localStorage.setItem("tripExpenses", JSON.stringify(updatedExpenses));
   };
 
-  // Calculate balances - who owes who what
-  const calculateBalances = () => {
-    const balances: { [key: string]: number } = {};
-    
-    // Initialize balances
-    currentTrip.members.forEach(member => {
-      balances[member] = 0;
-    });
-
-    // Calculate net balance for each person
-    expenses.forEach(expense => {
-      // Person who paid gets credited
-      balances[expense.paidBy] += expense.totalAmount;
-      
-      // People who owe get debited
-      expense.splits.forEach(split => {
-        balances[split.name] -= split.amount;
-        // Add back what they've already paid
-        balances[split.name] += split.paid;
-      });
-    });
-
-    // Create transfers list
-    const transfers: { from: string; to: string; amount: number }[] = [];
-    const creditors = Object.entries(balances).filter(([_, balance]) => balance > 0.01);
-    const debtors = Object.entries(balances).filter(([_, balance]) => balance < -0.01);
-
-    // Simplified debt settlement
-    debtors.forEach(([debtor, debtAmount]) => {
-      let remaining = Math.abs(debtAmount);
-      
-      creditors.forEach(([creditor, creditAmount]) => {
-        if (remaining > 0.01 && creditAmount > 0.01) {
-          const transfer = Math.min(remaining, creditAmount);
-          transfers.push({
-            from: debtor,
-            to: creditor,
-            amount: transfer,
-          });
-          remaining -= transfer;
-          balances[creditor] -= transfer;
-        }
-      });
-    });
-
-    return transfers.filter(t => t.amount > 0.01);
-  };
-
-  const splitMembers = currentTrip.members.filter(m => m !== paidBy);
-  const customTotal = splitMembers.reduce((sum, member) => sum + parseFloat(customSplits[member] || "0"), 0);
+  const splitMembers = currentTrip.members.filter((m) => m !== paidBy);
+  const customTotal = splitMembers.reduce(
+    (sum, member) => sum + parseFloat(customSplits[member] || "0"),
+    0,
+  );
   const remaining = expenseAmount ? parseFloat(expenseAmount) - customTotal : 0;
-
-  const balanceTransfers = calculateBalances();
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-24">
@@ -241,27 +210,6 @@ export default function Financials() {
           <h1 className="text-4xl font-bold mb-2">Financials</h1>
           <p className="text-gray-600 text-lg">Track group expenses</p>
         </div>
-
-        {/* Balance Summary */}
-        {balanceTransfers.length > 0 && (
-          <div className="mb-5 bg-white border-2 border-gray-900 rounded-2xl p-5 shadow-md">
-            <h3 className="text-2xl font-bold mb-4">Balances</h3>
-            <div className="space-y-3">
-              {balanceTransfers.map((transfer, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                  <div className="flex items-center gap-3 flex-1">
-                    <span className="font-bold text-lg">{transfer.from}</span>
-                    <ArrowRight className="text-purple-600" size={20} />
-                    <span className="font-bold text-lg">{transfer.to}</span>
-                  </div>
-                  <span className="text-xl font-bold text-purple-600">
-                    ${transfer.amount.toFixed(2)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Add Expense Button */}
         {!showAddExpense && (
@@ -314,7 +262,9 @@ export default function Financials() {
 
             {/* Who Paid */}
             <div className="mb-4">
-              <label className="block text-lg font-semibold mb-2">Who paid?</label>
+              <label className="block text-lg font-semibold mb-2">
+                Who paid?
+              </label>
               <select
                 value={paidBy}
                 onChange={(e) => setPaidBy(e.target.value)}
@@ -330,7 +280,9 @@ export default function Financials() {
 
             {/* Split Type */}
             <div className="mb-4">
-              <label className="block text-lg font-semibold mb-2">Split among others:</label>
+              <label className="block text-lg font-semibold mb-2">
+                Split among others:
+              </label>
               <div className="flex gap-2">
                 <button
                   onClick={() => setSplitType("equal")}
@@ -362,18 +314,28 @@ export default function Financials() {
                   <p className="text-sm text-gray-600">
                     Split among: {splitMembers.join(", ")}
                   </p>
-                  <p className={`text-sm font-bold ${remaining === 0 ? 'text-green-600' : remaining > 0 ? 'text-orange-600' : 'text-red-600'}`}>
-                    {remaining > 0 ? `$${remaining.toFixed(2)} left` : remaining < 0 ? `$${Math.abs(remaining).toFixed(2)} over` : 'Complete!'}
+                  <p
+                    className={`text-sm font-bold ${remaining === 0 ? "text-green-600" : remaining > 0 ? "text-orange-600" : "text-red-600"}`}
+                  >
+                    {remaining > 0
+                      ? `$${remaining.toFixed(2)} left`
+                      : remaining < 0
+                        ? `$${Math.abs(remaining).toFixed(2)} over`
+                        : "Complete!"}
                   </p>
                 </div>
                 <div className="space-y-2">
                   {splitMembers.map((member) => (
                     <div key={member} className="flex items-center gap-2">
-                      <label className="w-20 font-semibold text-sm">{member}:</label>
+                      <label className="w-20 font-semibold text-sm">
+                        {member}:
+                      </label>
                       <input
                         type="number"
                         value={customSplits[member] || ""}
-                        onChange={(e) => updateCustomSplit(member, e.target.value)}
+                        onChange={(e) =>
+                          updateCustomSplit(member, e.target.value)
+                        }
                         placeholder="0.00"
                         step="0.01"
                         min="0"
@@ -386,13 +348,22 @@ export default function Financials() {
             )}
 
             {/* Preview */}
-            {splitType === "equal" && expenseAmount && splitMembers.length > 0 && (
-              <div className="mb-4 bg-purple-50 rounded-xl p-3 border border-purple-200">
-                <p className="text-sm text-purple-900">
-                  {paidBy} paid ${expenseAmount}. Each of {splitMembers.join(", ")} owes: <span className="font-bold">${(parseFloat(expenseAmount) / splitMembers.length).toFixed(2)}</span>
-                </p>
-              </div>
-            )}
+            {splitType === "equal" &&
+              expenseAmount &&
+              splitMembers.length > 0 && (
+                <div className="mb-4 bg-purple-50 rounded-xl p-3 border border-purple-200">
+                  <p className="text-sm text-purple-900">
+                    {paidBy} paid ${expenseAmount}. Each of{" "}
+                    {splitMembers.join(", ")} owes:{" "}
+                    <span className="font-bold">
+                      $
+                      {(
+                        parseFloat(expenseAmount) / splitMembers.length
+                      ).toFixed(2)}
+                    </span>
+                  </p>
+                </div>
+              )}
 
             <div className="flex gap-2">
               <button
@@ -423,7 +394,9 @@ export default function Financials() {
           {expenses.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-2xl border-2 border-gray-900 p-8">
               <p className="text-gray-500 text-lg">No expenses yet</p>
-              <p className="text-gray-400 text-sm mt-2">Add an expense to get started!</p>
+              <p className="text-gray-400 text-sm mt-2">
+                Add an expense to get started!
+              </p>
             </div>
           ) : (
             expenses.map((expense) => (
@@ -434,7 +407,9 @@ export default function Financials() {
                 paidBy={expense.paidBy}
                 splits={expense.splits}
                 date={expense.date}
-                onPayment={(payer, amount) => handlePayment(expense.id, payer, amount)}
+                onPayment={(payer, amount) =>
+                  handlePayment(expense.id, payer, amount)
+                }
               />
             ))
           )}

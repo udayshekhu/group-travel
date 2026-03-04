@@ -1,0 +1,3 @@
+progress bar when closed (its in the low fi) 
+
+removed the Person that paid from the expanded thing.. feel like it's kind of confusing and not really necessary

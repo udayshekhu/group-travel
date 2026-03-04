@@ -16,7 +16,14 @@ interface ExpenseCardProps {
   onPayment: (payer: string, amount: number) => void;
 }
 
-export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPayment }: ExpenseCardProps) {
+export function ExpenseCard({
+  title,
+  totalAmount,
+  paidBy,
+  splits,
+  date,
+  onPayment,
+}: ExpenseCardProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPayer, setSelectedPayer] = useState("");
@@ -25,7 +32,7 @@ export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPaymen
   const handlePayClick = () => {
     if (splits.length > 0) {
       // Default to first person who still owes money
-      const firstOwer = splits.find(s => s.amount - s.paid > 0);
+      const firstOwer = splits.find((s) => s.amount - s.paid > 0);
       setSelectedPayer(firstOwer ? firstOwer.name : splits[0].name);
     }
     setShowPaymentModal(true);
@@ -42,11 +49,21 @@ export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPaymen
     }
   };
 
-  const selectedSplit = splits.find(s => s.name === selectedPayer);
-  const maxPayment = selectedSplit ? selectedSplit.amount - selectedSplit.paid : 0;
-  
+  const selectedSplit = splits.find((s) => s.name === selectedPayer);
+  const maxPayment = selectedSplit
+    ? selectedSplit.amount - selectedSplit.paid
+    : 0;
+
   // Calculate how much the payer is owed
-  const totalOwed = splits.reduce((sum, split) => sum + (split.amount - split.paid), 0);
+  const totalOwed = splits.reduce(
+    (sum, split) => sum + (split.amount - split.paid),
+    0,
+  );
+
+  // Calculate total paid and remaining
+  const totalPaid = splits.reduce((sum, split) => sum + split.paid, 0);
+  const totalRemaining = totalAmount - totalPaid;
+  const paidPercentage = (totalPaid / totalAmount) * 100;
 
   return (
     <>
@@ -54,51 +71,48 @@ export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPaymen
         <div className="flex justify-between items-start mb-4 pb-3 border-b border-gray-100">
           <div>
             <h3 className="text-2xl font-bold">{title}</h3>
-            <p className="text-sm text-gray-600 mt-1">Paid by <span className="font-semibold text-purple-600">{paidBy}</span></p>
+            <p className="text-sm text-gray-600 mt-1">
+              Paid by{" "}
+              <span className="font-semibold text-purple-600">{paidBy}</span>
+            </p>
             {date && <p className="text-xs text-gray-500 mt-1">{date}</p>}
           </div>
-          <span className="text-xl font-bold text-gray-500">${totalAmount.toFixed(2)}</span>
+          <span className="text-xl font-bold text-gray-500">
+            ${totalAmount.toFixed(2)}
+          </span>
         </div>
-        
+
+        {!isExpanded && (
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-semibold text-gray-700">
+                Payment Progress
+              </span>
+              <span className="text-sm font-bold text-gray-600">
+                ${totalPaid.toFixed(2)} / ${totalAmount.toFixed(2)}
+              </span>
+            </div>
+            <div className="w-full bg-red-600 rounded-full h-2.5 overflow-hidden">
+              <div
+                className="bg-green-600 h-full transition-all"
+                style={{ width: `${paidPercentage}%` }}
+              />
+            </div>
+          </div>
+        )}
+
         {isExpanded && (
           <div className="space-y-3 mb-4">
-            {/* Show the person who paid first */}
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-lg font-semibold">{paidBy}</span>
-                <div className="text-right">
-                  {totalOwed > 0 ? (
-                    <span className="text-lg font-bold text-green-600">
-                      Owed ${totalOwed.toFixed(2)}
-                    </span>
-                  ) : (
-                    <span className="text-sm font-bold text-green-600">
-                      ✓ Fully Paid Back
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="w-full bg-green-600 rounded-full h-3 overflow-hidden">
-                <div className="h-full" />
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t border-gray-200 my-2"></div>
-
             {/* Show people who owe */}
             {splits.map((split, index) => {
               const owedAmount = split.amount - split.paid;
               const progressPercentage = (split.paid / split.amount) * 100;
-              
+
               return (
                 <div key={index}>
-                  <div className="flex justify-between items-center mb-1">
+                  <div className="flex justify-between items-center">
                     <span className="text-lg font-semibold">{split.name}</span>
                     <div className="text-right">
-                      <span className="text-sm text-gray-500">
-                        Paid: ${split.paid.toFixed(2)} / ${split.amount.toFixed(2)}
-                      </span>
                       {owedAmount > 0 && (
                         <span className="ml-2 text-lg font-bold text-red-600">
                           Owes ${owedAmount.toFixed(2)}
@@ -111,6 +125,12 @@ export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPaymen
                       )}
                     </div>
                   </div>
+                  <div className="p-0 text-right">
+                    <span className="text-sm text-gray-500">
+                      Paid: ${split.paid.toFixed(2)} / $
+                      {split.amount.toFixed(2)}
+                    </span>
+                  </div>
                   <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden flex">
                     <div
                       className="bg-green-600 h-full transition-all"
@@ -119,7 +139,9 @@ export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPaymen
                     {owedAmount > 0 && (
                       <div
                         className="bg-red-600 h-full transition-all"
-                        style={{ width: `${(owedAmount / split.amount) * 100}%` }}
+                        style={{
+                          width: `${(owedAmount / split.amount) * 100}%`,
+                        }}
                       />
                     )}
                   </div>
@@ -130,9 +152,9 @@ export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPaymen
         )}
 
         <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-100">
-          <button 
+          <button
             onClick={handlePayClick}
-            className="bg-purple-600 text-white px-8 py-2.5 rounded-full text-lg hover:bg-purple-700 transition font-semibold shadow-sm"
+            className="bg-purple-600 text-white px-4 py-2 rounded-full text-md hover:bg-purple-700 transition font-semibold shadow-sm"
           >
             Settle Up
           </button>
@@ -160,7 +182,9 @@ export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPaymen
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-semibold mb-2">Who is paying?</label>
+              <label className="block text-sm font-semibold mb-2">
+                Who is paying?
+              </label>
               <select
                 value={selectedPayer}
                 onChange={(e) => setSelectedPayer(e.target.value)}
@@ -168,7 +192,10 @@ export function ExpenseCard({ title, totalAmount, paidBy, splits, date, onPaymen
               >
                 {splits.map((split, index) => (
                   <option key={index} value={split.name}>
-                    {split.name} {split.amount - split.paid > 0 ? `(owes $${(split.amount - split.paid).toFixed(2)})` : '(settled)'}
+                    {split.name}{" "}
+                    {split.amount - split.paid > 0
+                      ? `(owes $${(split.amount - split.paid).toFixed(2)})`
+                      : "(settled)"}
                   </option>
                 ))}
               </select>
