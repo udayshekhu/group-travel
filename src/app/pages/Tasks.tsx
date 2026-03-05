@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { BottomNav } from "../components/BottomNav";
 import { Plus, ChevronDown, Trash2 } from "lucide-react";
+import { CustomSelect } from "../components/CustomSelect";
 
 interface Task {
   id: string;
@@ -153,15 +154,17 @@ export default function Tasks() {
               className="w-full p-3 border-2 border-gray-300 rounded-xl mb-3 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
               onKeyPress={handleKeyPress}
             />
-            <select
-              value={newTaskAssignee}
-              onChange={(e) => setNewTaskAssignee(e.target.value)}
-              className="w-full p-3 border-2 border-gray-300 rounded-xl mb-4 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-            >
-              {currentTrip.members.map((member, index) => (
-                <option key={index} value={member}>{member}</option>
-              ))}
-            </select>
+            <div className="mb-4">
+              <CustomSelect
+                value={newTaskAssignee}
+                onValueChange={setNewTaskAssignee}
+                options={currentTrip.members.map((member) => ({
+                  value: member,
+                  label: member,
+                }))}
+                placeholder="Assign to"
+              />
+            </div>
             <div className="flex gap-2">
               <button
                 onClick={addTask}
