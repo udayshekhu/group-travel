@@ -7,22 +7,22 @@ import Tasks from "./pages/Tasks";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    Component: Home,
   },
   {
     path: "/financials",
-    element: <Financials />,
+    Component: Financials,
   },
   {
     path: "/favorites",
-    element: <Favorites />,
+    Component: Favorites,
   },
   {
     path: "/tasks",
-    element: <Tasks />,
+    Component: Tasks,
   },
   {
     path: "*",
-    element: <Home />,
+    Component: Home,
   },
 ]);

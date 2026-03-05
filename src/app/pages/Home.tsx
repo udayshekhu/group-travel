@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { BottomNav } from "../components/BottomNav";
+import { UserSwitcher } from "../components/UserSwitcher";
 import { useNavigate } from "react-router";
 import { Plus, Users, MapPin, Calendar, ChevronRight } from "lucide-react";
 
@@ -120,6 +121,9 @@ export default function Home() {
           <h1 className="text-4xl font-bold mb-2">Trip</h1>
           <p className="text-gray-600 text-lg">Plan your adventure</p>
         </div>
+
+        {/* User Switcher */}
+        <UserSwitcher />
 
         {/* Current Trip Card */}
         <div className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-6 mb-5 shadow-lg text-white">
