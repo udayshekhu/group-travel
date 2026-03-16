@@ -1,4 +1,4 @@
-import { Home, DollarSign, Heart, Search } from "lucide-react";
+import { Home, DollarSign, Lightbulb, ClipboardPen } from "lucide-react";
 import { useNavigate, useLocation } from "react-router";
 
 export function BottomNav() {
@@ -30,7 +30,7 @@ export function BottomNav() {
             isActive("/favorites") ? "text-purple-600" : "text-gray-400 hover:text-gray-600"
           }`}
         >
-          <Heart size={28} className="mx-auto" strokeWidth={isActive("/favorites") ? 2.5 : 2} />
+          <Lightbulb size={28} className="mx-auto" strokeWidth={isActive("/favorites") ? 2.5 : 2} />
         </button>
         <button
           onClick={() => navigate("/tasks")}
@@ -38,7 +38,7 @@ export function BottomNav() {
             isActive("/tasks") ? "text-purple-600" : "text-gray-400 hover:text-gray-600"
           }`}
         >
-          <Search size={28} className="mx-auto" strokeWidth={isActive("/tasks") ? 2.5 : 2} />
+          <ClipboardPen size={28} className="mx-auto" strokeWidth={isActive("/tasks") ? 2.5 : 2} />
         </button>
       </div>
     </div>

@@ -3,9 +3,22 @@ import { BottomNav } from "../components/BottomNav";
 import { UserSwitcher } from "../components/UserSwitcher";
 import { useUser } from "../context/UserContext";
 import { PlaceCard } from "../components/PlaceCard";
-import { X, Heart, RotateCcw, Trash2, MapPin, Plus, Upload } from "lucide-react";
+import {
+  X,
+  Heart,
+  RotateCcw,
+  MapPin,
+  Plus,
+  Upload,
+} from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Textarea } from "../components/ui/textarea";
@@ -28,13 +41,27 @@ export default function Favorites() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showSwipeView, setShowSwipeView] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isResetWarningOpen, setIsResetWarningOpen] =
+    useState(false);
   // Changed: placeLikes now stores arrays of user IDs instead of counts
-  const [placeLikes, setPlaceLikes] = useState<Record<number, string[]>>({});
-  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
-  const [selectedPlaceForDetail, setSelectedPlaceForDetail] = useState<Place | null>(null);
-  
+  const [placeLikes, setPlaceLikes] = useState<
+    Record<number, string[]>
+  >({});
+  // Track which users have voted (liked OR passed) on which ideas
+  const [votedIdeas, setVotedIdeas] = useState<
+    Record<number, string[]>
+  >({});
+  const [expandedCards, setExpandedCards] = useState<
+    Set<number>
+  >(new Set());
+  const [selectedPlaceForDetail, setSelectedPlaceForDetail] =
+    useState<Place | null>(null);
+  const [sortBy, setSortBy] = useState<
+    "created" | "most-liked" | "least-liked"
+  >("created");
+
   const MAX_DESCRIPTION_CHARS = 100;
-  
+
   // Form state for adding a new place
   const [newPlace, setNewPlace] = useState({
     name: "",
@@ -44,11 +71,59 @@ export default function Favorites() {
   });
 
   useEffect(() => {
+    // Default ideas
+    const defaultIdeas: Place[] = [
+      {
+        id: 1,
+        name: "Whistler Blackcomb",
+        location: "BC",
+        image:
+          "https://images.unsplash.com/photo-1488646953014-85cb44e25828?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBkZXN0aW5hdGlvbnxlbnwxfHx8fDE3NzI1NzIwODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        description: "This is cool desc",
+        rating: 0,
+        isCustom: false,
+      },
+      {
+        id: 2,
+        name: "Stanley Park",
+        location: "BC",
+        image:
+          "https://images.unsplash.com/photo-1488646953014-85cb44e25828?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBkZXN0aW5hdGlvbnxlbnwxfHx8fDE3NzI1NzIwODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        description: "This is also cool desc",
+        rating: 0,
+        isCustom: false,
+      },
+      {
+        id: 3,
+        name: "Red River X",
+        location: "Winnipeg",
+        image:
+          "https://images.unsplash.com/photo-1488646953014-85cb44e25828?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBkZXN0aW5hdGlvbnxlbnwxfHx8fDE3NzI1NzIwODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        description: "this is lame",
+        rating: 0,
+        isCustom: false,
+      },
+    ];
+
+    // Default likes - 3 users liked idea 1 (not Jordan), 2 users liked idea 2, 1 user liked idea 3
+    const defaultLikes: Record<number, string[]> = {
+      1: ["Sam", "Alex", "Taylor"], // 3 likes, not Jordan
+      2: ["Sam", "Alex"], // 2 likes
+      3: ["Taylor"], // 1 like
+    };
+
     // Load custom places
     const storedCustom = localStorage.getItem("customPlaces");
     if (storedCustom) {
       const places = JSON.parse(storedCustom);
       setCustomPlaces(places);
+    } else {
+      // Initialize with default ideas
+      setCustomPlaces(defaultIdeas);
+      localStorage.setItem(
+        "customPlaces",
+        JSON.stringify(defaultIdeas),
+      );
     }
 
     // Load swipe progress
@@ -63,25 +138,44 @@ export default function Favorites() {
     if (storedLikes) {
       const parsed = JSON.parse(storedLikes);
       // Check if we need to migrate from old format (numbers) to new format (arrays)
-      const needsMigration = Object.values(parsed).some(val => typeof val === 'number');
-      
+      const needsMigration = Object.values(parsed).some(
+        (val) => typeof val === "number",
+      );
+
       if (needsMigration) {
         // Migration: convert old numeric counts to empty arrays
         // (we can't recover which users liked what, so reset to empty)
         const migratedLikes: Record<number, string[]> = {};
-        Object.keys(parsed).forEach(key => {
+        Object.keys(parsed).forEach((key) => {
           migratedLikes[parseInt(key)] = [];
         });
         setPlaceLikes(migratedLikes);
-        localStorage.setItem("placeLikes", JSON.stringify(migratedLikes));
+        localStorage.setItem(
+          "placeLikes",
+          JSON.stringify(migratedLikes),
+        );
       } else {
         setPlaceLikes(parsed);
       }
+    } else {
+      // Initialize with default likes
+      setPlaceLikes(defaultLikes);
+      localStorage.setItem(
+        "placeLikes",
+        JSON.stringify(defaultLikes),
+      );
+    }
+
+    // Load voted ideas
+    const storedVotedIdeas = localStorage.getItem("votedIdeas");
+    if (storedVotedIdeas) {
+      setVotedIdeas(JSON.parse(storedVotedIdeas));
     }
 
     // Determine if we should show swipe view
     const stored = localStorage.getItem("customPlaces");
-    const storedProgress = localStorage.getItem("swipeProgress");
+    const storedProgress =
+      localStorage.getItem("swipeProgress");
     if (stored && storedProgress) {
       const places = JSON.parse(stored);
       const progress = parseInt(storedProgress);
@@ -91,7 +185,7 @@ export default function Favorites() {
 
   const handleSwipe = (direction: "left" | "right") => {
     const currentPlace = customPlaces[currentIndex];
-    
+
     if (direction === "right") {
       // Only add like if this place hasn't been liked yet by the current user
       const likes = placeLikes[currentPlace.id] || [];
@@ -99,24 +193,50 @@ export default function Favorites() {
         const updatedLikes = { ...placeLikes };
         updatedLikes[currentPlace.id] = [...likes, currentUser];
         setPlaceLikes(updatedLikes);
-        localStorage.setItem("placeLikes", JSON.stringify(updatedLikes));
+        localStorage.setItem(
+          "placeLikes",
+          JSON.stringify(updatedLikes),
+        );
       }
     } else if (direction === "left") {
       // Remove like if the user previously liked this place
       const likes = placeLikes[currentPlace.id] || [];
       if (likes.includes(currentUser)) {
         const updatedLikes = { ...placeLikes };
-        updatedLikes[currentPlace.id] = likes.filter(id => id !== currentUser);
+        updatedLikes[currentPlace.id] = likes.filter(
+          (id) => id !== currentUser,
+        );
         setPlaceLikes(updatedLikes);
-        localStorage.setItem("placeLikes", JSON.stringify(updatedLikes));
+        localStorage.setItem(
+          "placeLikes",
+          JSON.stringify(updatedLikes),
+        );
       }
+    }
+
+    // Track that the user has voted on this idea
+    const currentVotedIdeas = votedIdeas[currentPlace.id] || [];
+    if (!currentVotedIdeas.includes(currentUser)) {
+      const updatedVotedIdeas = { ...votedIdeas };
+      updatedVotedIdeas[currentPlace.id] = [
+        ...currentVotedIdeas,
+        currentUser,
+      ];
+      setVotedIdeas(updatedVotedIdeas);
+      localStorage.setItem(
+        "votedIdeas",
+        JSON.stringify(updatedVotedIdeas),
+      );
     }
 
     const nextIndex = currentIndex + 1;
     setTimeout(() => {
       setCurrentIndex(nextIndex);
-      localStorage.setItem("swipeProgress", nextIndex.toString());
-      
+      localStorage.setItem(
+        "swipeProgress",
+        nextIndex.toString(),
+      );
+
       if (nextIndex >= customPlaces.length) {
         setShowSwipeView(false);
       }
@@ -134,16 +254,70 @@ export default function Favorites() {
     // Keep existing likes and place likes intact
   };
 
+  const handleResetSwipes = () => {
+    // Clear all voted ideas for current user only
+    const updatedVotedIdeas = { ...votedIdeas };
+    Object.keys(updatedVotedIdeas).forEach((key) => {
+      const placeId = parseInt(key);
+      updatedVotedIdeas[placeId] =
+        updatedVotedIdeas[placeId]?.filter(
+          (user) => user !== currentUser,
+        ) || [];
+      if (updatedVotedIdeas[placeId].length === 0) {
+        delete updatedVotedIdeas[placeId];
+      }
+    });
+    setVotedIdeas(updatedVotedIdeas);
+    localStorage.setItem(
+      "votedIdeas",
+      JSON.stringify(updatedVotedIdeas),
+    );
+
+    // Clear all likes for current user only
+    const updatedLikes = { ...placeLikes };
+    Object.keys(updatedLikes).forEach((key) => {
+      const placeId = parseInt(key);
+      updatedLikes[placeId] =
+        updatedLikes[placeId]?.filter(
+          (user) => user !== currentUser,
+        ) || [];
+      if (updatedLikes[placeId].length === 0) {
+        delete updatedLikes[placeId];
+      }
+    });
+    setPlaceLikes(updatedLikes);
+    localStorage.setItem(
+      "placeLikes",
+      JSON.stringify(updatedLikes),
+    );
+
+    // Reset to beginning
+    setCurrentIndex(0);
+    setShowSwipeView(true);
+    localStorage.setItem("swipeProgress", "0");
+
+    // Close the warning modal
+    setIsResetWarningOpen(false);
+  };
+
   const removePlace = (id: number) => {
-    const updatedCustom = customPlaces.filter((place) => place.id !== id);
+    const updatedCustom = customPlaces.filter(
+      (place) => place.id !== id,
+    );
     setCustomPlaces(updatedCustom);
-    localStorage.setItem("customPlaces", JSON.stringify(updatedCustom));
+    localStorage.setItem(
+      "customPlaces",
+      JSON.stringify(updatedCustom),
+    );
 
     // Remove likes
     const updatedLikes = { ...placeLikes };
     delete updatedLikes[id];
     setPlaceLikes(updatedLikes);
-    localStorage.setItem("placeLikes", JSON.stringify(updatedLikes));
+    localStorage.setItem(
+      "placeLikes",
+      JSON.stringify(updatedLikes),
+    );
 
     // Reset swipe if needed
     if (currentIndex > updatedCustom.length) {
@@ -153,7 +327,11 @@ export default function Favorites() {
   };
 
   const handleAddPlace = () => {
-    if (!newPlace.name || !newPlace.location || !newPlace.description) {
+    if (
+      !newPlace.name ||
+      !newPlace.location ||
+      !newPlace.description
+    ) {
       return;
     }
 
@@ -162,7 +340,9 @@ export default function Favorites() {
       id: newId,
       name: newPlace.name,
       location: newPlace.location,
-      image: newPlace.image || "https://images.unsplash.com/photo-1488646953014-85cb44e25828?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBkZXN0aW5hdGlvbnxlbnwxfHx8fDE3NzI1NzIwODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      image:
+        newPlace.image ||
+        "https://images.unsplash.com/photo-1488646953014-85cb44e25828?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0cmF2ZWwlMjBkZXN0aW5hdGlvbnxlbnwxfHx8fDE3NzI1NzIwODR8MA&ixlib=rb-4.1.0&q=80&w=1080",
       description: newPlace.description,
       rating: 0,
       isCustom: true,
@@ -170,7 +350,10 @@ export default function Favorites() {
 
     const updatedCustom = [...customPlaces, placeToAdd];
     setCustomPlaces(updatedCustom);
-    localStorage.setItem("customPlaces", JSON.stringify(updatedCustom));
+    localStorage.setItem(
+      "customPlaces",
+      JSON.stringify(updatedCustom),
+    );
 
     setNewPlace({
       name: "",
@@ -181,7 +364,9 @@ export default function Favorites() {
     setIsAddDialogOpen(false);
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -191,7 +376,9 @@ export default function Favorites() {
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      alert("Image must be smaller than 2MB. Please choose a smaller image.");
+      alert(
+        "Image must be smaller than 2MB. Please choose a smaller image.",
+      );
       return;
     }
 
@@ -204,11 +391,30 @@ export default function Favorites() {
   };
 
   const startSwiping = () => {
-    setCurrentIndex(0);
+    // Find the first idea that hasn't been voted on by the current user
+    const firstUnvotedIndex = customPlaces.findIndex(
+      (place) =>
+        !(votedIdeas[place.id]?.includes(currentUser) || false),
+    );
+
+    // If all ideas have been voted on, start from the beginning
+    const startIndex =
+      firstUnvotedIndex >= 0 ? firstUnvotedIndex : 0;
+
+    setCurrentIndex(startIndex);
     setShowSwipeView(true);
-    setPlaceLikes({});
-    localStorage.setItem("swipeProgress", "0");
-    localStorage.setItem("placeLikes", JSON.stringify({}));
+    localStorage.setItem(
+      "swipeProgress",
+      startIndex.toString(),
+    );
+  };
+
+  // Get unvoted places for the current user
+  const getUnvotedPlaces = () => {
+    return customPlaces.filter(
+      (place) =>
+        !(votedIdeas[place.id]?.includes(currentUser) || false),
+    );
   };
 
   // Swipe View
@@ -218,32 +424,26 @@ export default function Favorites() {
         <div className="max-w-md mx-auto p-5">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">Places</h1>
+            <h1 className="text-3xl font-bold mb-2">Ideas</h1>
             <p className="text-gray-600 text-lg">
               Swipe right to like, left to pass
             </p>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 mb-4">
-            <button
-              onClick={() => setIsAddDialogOpen(true)}
-              className="flex-1 bg-purple-600 text-white py-4 rounded-2xl text-lg font-semibold hover:bg-purple-700 transition shadow-md flex items-center justify-center gap-2"
-            >
-              <Plus size={24} strokeWidth={2.5} />
-              Add Place
-            </button>
-            <button
-              onClick={() => {
-                setCurrentIndex(customPlaces.length);
-                setShowSwipeView(false);
-                localStorage.setItem("swipeProgress", customPlaces.length.toString());
-              }}
-              className="flex-1 bg-white text-purple-600 border-2 border-purple-600 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 transition shadow-md flex items-center justify-center gap-2"
-            >
-              Show Results
-            </button>
-          </div>
+          {/* Back to Ideas Button */}
+          <button
+            onClick={() => {
+              setCurrentIndex(customPlaces.length);
+              setShowSwipeView(false);
+              localStorage.setItem(
+                "swipeProgress",
+                customPlaces.length.toString(),
+              );
+            }}
+            className="w-full bg-white text-purple-600 border-2 border-purple-600 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 transition shadow-md mb-4"
+          >
+            Back to Ideas
+          </button>
 
           {/* Card Stack */}
           <div className="relative h-[500px] -mb-4">
@@ -258,11 +458,12 @@ export default function Favorites() {
                       onSwipe={handleSwipe}
                       style={{
                         zIndex: customPlaces.length - index,
-                        scale: 1 - (index - currentIndex) * 0.05,
+                        scale:
+                          1 - (index - currentIndex) * 0.05,
                         y: (index - currentIndex) * 10,
                       }}
                     />
-                  )
+                  ),
               )}
             </AnimatePresence>
           </div>
@@ -273,53 +474,94 @@ export default function Favorites() {
               onClick={() => handleButtonSwipe("left")}
               className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition shadow-lg border-2 border-white"
             >
-              <X size={32} className="text-white" strokeWidth={2.5} />
+              <X
+                size={32}
+                className="text-white"
+                strokeWidth={2.5}
+              />
             </button>
             <button
               onClick={() => handleButtonSwipe("right")}
               className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition shadow-lg border-2 border-white"
             >
-              <Heart size={32} className="text-white" strokeWidth={2.5} />
+              <Heart
+                size={32}
+                className="text-white"
+                strokeWidth={2.5}
+              />
             </button>
           </div>
 
           {/* Progress */}
           <div className="bg-white rounded-2xl p-4 text-center shadow-sm border border-gray-200">
             <p className="text-lg font-semibold text-gray-900">
-              {currentIndex} / {customPlaces.length} <span className="text-gray-500">viewed</span>
+              {currentIndex} / {customPlaces.length}{" "}
+              <span className="text-gray-500">viewed</span>
             </p>
-            <p className="text-sm text-gray-600 mt-1">{Object.values(placeLikes).flat().length} places liked</p>
+            <p className="text-sm text-gray-600 mt-1">
+              {
+                Object.values(placeLikes).filter((users) =>
+                  users.includes(currentUser),
+                ).length
+              }{" "}
+              ideas liked
+            </p>
           </div>
         </div>
         <BottomNav />
 
-        {/* Add Place Dialog */}
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        {/* Add Idea Dialog */}
+        <Dialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+        >
           <DialogContent className="max-w-md bg-white rounded-3xl">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold">Add a New Place</DialogTitle>
+              <DialogTitle className="text-2xl font-bold">
+                Add a New Idea
+              </DialogTitle>
+              <DialogDescription className="sr-only">
+                Fill out the form below to add a new idea for
+                your group to explore
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <div>
-                <Label htmlFor="name" className="text-base font-semibold">
-                  Place Name *
+                <Label
+                  htmlFor="name"
+                  className="text-base font-semibold"
+                >
+                  Idea Name *
                 </Label>
                 <Input
                   id="name"
                   value={newPlace.name}
-                  onChange={(e) => setNewPlace({ ...newPlace, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewPlace({
+                      ...newPlace,
+                      name: e.target.value,
+                    })
+                  }
                   placeholder="e.g., Grand Canyon"
                   className="mt-2 rounded-xl border-gray-300"
                 />
               </div>
               <div>
-                <Label htmlFor="location" className="text-base font-semibold">
+                <Label
+                  htmlFor="location"
+                  className="text-base font-semibold"
+                >
                   Location *
                 </Label>
                 <Input
                   id="location"
                   value={newPlace.location}
-                  onChange={(e) => setNewPlace({ ...newPlace, location: e.target.value })}
+                  onChange={(e) =>
+                    setNewPlace({
+                      ...newPlace,
+                      location: e.target.value,
+                    })
+                  }
                   placeholder="e.g., Arizona, USA"
                   className="mt-2 rounded-xl border-gray-300"
                 />
@@ -337,20 +579,27 @@ export default function Favorites() {
                         className="w-full h-full object-cover"
                       />
                       <button
-                        onClick={() => setNewPlace({ ...newPlace, image: "" })}
+                        onClick={() =>
+                          setNewPlace({
+                            ...newPlace,
+                            image: "",
+                          })
+                        }
                         className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition"
                       >
                         <X size={16} />
                       </button>
                     </div>
                   )}
-                  
+
                   <label
                     htmlFor="image-upload"
                     className="flex items-center justify-center gap-2 w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 rounded-xl cursor-pointer transition border border-gray-300"
                   >
                     <Upload size={18} />
-                    {newPlace.image ? "Change Image" : "Upload Image"}
+                    {newPlace.image
+                      ? "Change Image"
+                      : "Upload Image"}
                   </label>
                   <input
                     id="image-upload"
@@ -359,18 +608,28 @@ export default function Favorites() {
                     onChange={handleImageUpload}
                     className="hidden"
                   />
-                  <p className="text-xs text-gray-500">Max 2MB • JPG, PNG, or GIF</p>
+                  <p className="text-xs text-gray-500">
+                    Max 2MB • JPG, PNG, or GIF
+                  </p>
                 </div>
               </div>
               <div>
-                <Label htmlFor="description" className="text-base font-semibold">
+                <Label
+                  htmlFor="description"
+                  className="text-base font-semibold"
+                >
                   Description *
                 </Label>
                 <Textarea
                   id="description"
                   value={newPlace.description}
-                  onChange={(e) => setNewPlace({ ...newPlace, description: e.target.value })}
-                  placeholder="Tell your group why you want to visit this place..."
+                  onChange={(e) =>
+                    setNewPlace({
+                      ...newPlace,
+                      description: e.target.value,
+                    })
+                  }
+                  placeholder="Tell your group why you want to try this idea..."
                   className="mt-2 rounded-xl border-gray-300 min-h-24"
                 />
               </div>
@@ -379,7 +638,12 @@ export default function Favorites() {
                   variant="outline"
                   onClick={() => {
                     setIsAddDialogOpen(false);
-                    setNewPlace({ name: "", location: "", image: "", description: "" });
+                    setNewPlace({
+                      name: "",
+                      location: "",
+                      image: "",
+                      description: "",
+                    });
                   }}
                   className="flex-1 rounded-xl"
                 >
@@ -387,10 +651,14 @@ export default function Favorites() {
                 </Button>
                 <Button
                   onClick={handleAddPlace}
-                  disabled={!newPlace.name || !newPlace.location || !newPlace.description}
+                  disabled={
+                    !newPlace.name ||
+                    !newPlace.location ||
+                    !newPlace.description
+                  }
                   className="flex-1 bg-purple-600 hover:bg-purple-700 text-white rounded-xl"
                 >
-                  Add Place
+                  Add Idea
                 </Button>
               </div>
             </div>
@@ -401,45 +669,52 @@ export default function Favorites() {
   }
 
   // Summary View (Main Screen)
-  const sortedPlaces = [...customPlaces].sort((a, b) => (placeLikes[b.id]?.length || 0) - (placeLikes[a.id]?.length || 0));
-  const hasSwipedThrough = currentIndex >= customPlaces.length && customPlaces.length > 0;
+  const sortedPlaces = [...customPlaces].sort((a, b) => {
+    if (sortBy === "created") {
+      return a.id - b.id;
+    } else if (sortBy === "most-liked") {
+      return (
+        (placeLikes[b.id]?.length || 0) -
+        (placeLikes[a.id]?.length || 0)
+      );
+    } else if (sortBy === "least-liked") {
+      return (
+        (placeLikes[a.id]?.length || 0) -
+        (placeLikes[b.id]?.length || 0)
+      );
+    }
+    return 0;
+  });
+  const hasSwipedThrough =
+    currentIndex >= customPlaces.length &&
+    customPlaces.length > 0;
+
+  // Check if there are any unvoted ideas for the current user
+  const hasUnvotedIdeas = customPlaces.some(
+    (place) =>
+      !(votedIdeas[place.id]?.includes(currentUser) || false),
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 pb-24">
       <div className="max-w-md mx-auto p-5">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2">Places</h1>
-          <p className="text-gray-600 text-lg">
-            {customPlaces.length === 0 
-              ? "Add places your group wants to explore"
-              : hasSwipedThrough
-                ? "Here's what your group likes"
-                : "Your saved places"
-            }
-          </p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-3 mb-6">
-          <button
-            onClick={() => setIsAddDialogOpen(true)}
-            className="flex-1 bg-purple-600 text-white py-4 rounded-2xl text-lg font-semibold hover:bg-purple-700 transition shadow-md flex items-center justify-center gap-2"
-          >
-            <Plus size={24} strokeWidth={2.5} />
-            Add Place
-          </button>
+          <div className="flex items-start justify-between gap-4 mb-3">
+            <div className="flex-1">
+              <h1 className="text-3xl font-bold mb-2">Ideas</h1>
+              <p className="text-gray-600 text-lg">
+                {customPlaces.length === 0
+                  ? "Add ideas your group wants to explore"
+                  : hasSwipedThrough
+                    ? "Here's what your group likes"
+                    : "Your saved ideas"}
+              </p>
+            </div>
+          </div>
           {customPlaces.length > 0 && (
-            <>
-              {hasSwipedThrough ? (
-                <button
-                  onClick={resetCards}
-                  className="flex-1 bg-white text-purple-600 border-2 border-purple-600 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 transition shadow-md flex items-center justify-center gap-2"
-                >
-                  <RotateCcw size={20} />
-                  Swipe Again
-                </button>
-              ) : (
+            <div className="flex gap-3">
+              {hasUnvotedIdeas ? (
                 <button
                   onClick={startSwiping}
                   className="flex-1 bg-white text-purple-600 border-2 border-purple-600 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 transition shadow-md flex items-center justify-center gap-2"
@@ -447,8 +722,23 @@ export default function Favorites() {
                   <Heart size={20} />
                   Start Swiping
                 </button>
+              ) : (
+                <button
+                  onClick={() => setIsResetWarningOpen(true)}
+                  className="flex-1 bg-white text-purple-600 border-2 border-purple-600 py-4 rounded-2xl text-lg font-semibold hover:bg-purple-50 transition shadow-md flex items-center justify-center gap-2"
+                >
+                  <RotateCcw size={20} />
+                  Swipe Again
+                </button>
               )}
-            </>
+              <button
+                onClick={() => setIsAddDialogOpen(true)}
+                className="flex-1 bg-purple-600 text-white py-4 rounded-2xl text-lg font-semibold hover:bg-purple-700 transition shadow-md flex items-center justify-center gap-2"
+              >
+                <Plus size={20} strokeWidth={2.5} />
+                Add Idea
+              </button>
+            </div>
           )}
         </div>
 
@@ -458,76 +748,166 @@ export default function Favorites() {
             <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <MapPin size={40} className="text-purple-600" />
             </div>
-            <p className="text-2xl mb-3 font-bold">No places yet</p>
-            <p className="text-gray-600 mb-6">
-              Click "Add Place" above to get started
+            <p className="text-2xl mb-3 font-bold">
+              No ideas yet
             </p>
+            <p className="text-gray-600 mb-6">
+              Add your first idea to get started
+            </p>
+            <button
+              onClick={() => setIsAddDialogOpen(true)}
+              className="bg-purple-600 text-white py-3 px-6 rounded-2xl text-base font-semibold hover:bg-purple-700 transition shadow-md inline-flex items-center justify-center gap-2"
+            >
+              <Plus size={20} strokeWidth={2.5} />
+              Add Idea
+            </button>
           </div>
         ) : (
           <>
-            {/* Places List */}
+            {/* Filter */}
+            <div className="mb-4">
+              <select
+                value={sortBy}
+                onChange={(e) =>
+                  setSortBy(
+                    e.target.value as
+                      | "created"
+                      | "most-liked"
+                      | "least-liked",
+                  )
+                }
+                className="px-2 py-1 bg-transparent border-none text-xs text-gray-600 hover:text-gray-900 focus:outline-none cursor-pointer"
+              >
+                <option value="created">Order Created</option>
+                <option value="most-liked">Most Liked</option>
+                <option value="least-liked">Least Liked</option>
+              </select>
+            </div>
+
+            {/* Ideas List */}
             <div className="space-y-4">
               {sortedPlaces.map((place) => {
                 const likes = placeLikes[place.id]?.length || 0;
-                const isLiked = placeLikes[place.id]?.includes(currentUser) || false;
-                
+                const isLiked =
+                  placeLikes[place.id]?.includes(currentUser) ||
+                  false;
+
                 return (
                   <div
                     key={place.id}
                     className={`bg-white rounded-2xl overflow-hidden border-2 shadow-sm transition relative ${
-                      isLiked ? 'border-purple-300 bg-purple-50/30' : 'border-gray-200'
+                      isLiked
+                        ? "border-purple-300 bg-purple-50/30"
+                        : "border-gray-200"
                     }`}
                   >
-                    <button
-                      onClick={() => removePlace(place.id)}
-                      className="absolute top-2 right-2 z-10 w-6 h-6 bg-gray-400/80 hover:bg-red-500 text-white rounded-full flex items-center justify-center transition shadow-sm"
-                    >
-                      <Trash2 size={12} />
-                    </button>
                     <div className="flex gap-3 p-3">
                       <img
                         src={place.image}
                         alt={place.name}
                         className="w-20 h-20 object-cover rounded-xl flex-shrink-0"
                       />
-                      <div className="flex-1 pr-6 min-w-0">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <h3 className="text-lg font-bold break-words leading-tight flex-1 line-clamp-2" style={{ overflowWrap: 'anywhere' }}>{place.name}</h3>
+                          <h3
+                            className="text-lg font-bold break-words leading-tight flex-1 line-clamp-2"
+                            style={{ overflowWrap: "anywhere" }}
+                          >
+                            {place.name}
+                          </h3>
                           <button
                             onClick={() => {
+                              // Mark as voted when clicking the like button
+                              const currentVotedIdeas =
+                                votedIdeas[place.id] || [];
+                              if (
+                                !currentVotedIdeas.includes(
+                                  currentUser,
+                                )
+                              ) {
+                                const updatedVotedIdeas = {
+                                  ...votedIdeas,
+                                };
+                                updatedVotedIdeas[place.id] = [
+                                  ...currentVotedIdeas,
+                                  currentUser,
+                                ];
+                                setVotedIdeas(
+                                  updatedVotedIdeas,
+                                );
+                                localStorage.setItem(
+                                  "votedIdeas",
+                                  JSON.stringify(
+                                    updatedVotedIdeas,
+                                  ),
+                                );
+                              }
+
                               if (isLiked) {
                                 // Unlike: remove from likedPlaces and decrement count
-                                const updatedLikes = { ...placeLikes };
-                                updatedLikes[place.id] = updatedLikes[place.id]?.filter(id => id !== currentUser) || [];
+                                const updatedLikes = {
+                                  ...placeLikes,
+                                };
+                                updatedLikes[place.id] =
+                                  updatedLikes[
+                                    place.id
+                                  ]?.filter(
+                                    (id) => id !== currentUser,
+                                  ) || [];
                                 setPlaceLikes(updatedLikes);
-                                localStorage.setItem("placeLikes", JSON.stringify(updatedLikes));
+                                localStorage.setItem(
+                                  "placeLikes",
+                                  JSON.stringify(updatedLikes),
+                                );
                               } else {
                                 // Like: add to likedPlaces and increment count
-                                const updatedLikes = { ...placeLikes };
-                                updatedLikes[place.id] = [...(updatedLikes[place.id] || []), currentUser];
+                                const updatedLikes = {
+                                  ...placeLikes,
+                                };
+                                updatedLikes[place.id] = [
+                                  ...(updatedLikes[place.id] ||
+                                    []),
+                                  currentUser,
+                                ];
                                 setPlaceLikes(updatedLikes);
-                                localStorage.setItem("placeLikes", JSON.stringify(updatedLikes));
+                                localStorage.setItem(
+                                  "placeLikes",
+                                  JSON.stringify(updatedLikes),
+                                );
                               }
                             }}
-                            className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold shadow-sm flex-shrink-0 transition ${
-                              isLiked 
-                                ? 'bg-purple-600 text-white hover:bg-purple-700' 
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold shadow-sm flex-shrink-0 transition ${
+                              isLiked
+                                ? "bg-purple-600 text-white hover:bg-purple-700"
+                                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                             }`}
                           >
-                            <Heart size={12} fill={isLiked ? "white" : "none"} />
+                            <Heart
+                              size={16}
+                              fill={isLiked ? "white" : "none"}
+                            />
                             {likes}
                           </button>
                         </div>
                         <div className="flex items-center gap-1 text-gray-600 text-xs mb-2">
                           <MapPin size={12} />
-                          <span className="break-words line-clamp-1" style={{ overflowWrap: 'anywhere' }}>{place.location}</span>
+                          <span
+                            className="break-words line-clamp-1"
+                            style={{ overflowWrap: "anywhere" }}
+                          >
+                            {place.location}
+                          </span>
                         </div>
-                        <p className="text-gray-700 text-xs leading-relaxed break-words line-clamp-1 mb-1" style={{ overflowWrap: 'anywhere' }}>
+                        <p
+                          className="text-gray-700 text-xs leading-relaxed break-words line-clamp-1 mb-1"
+                          style={{ overflowWrap: "anywhere" }}
+                        >
                           {place.description}
                         </p>
                         <button
-                          onClick={() => setSelectedPlaceForDetail(place)}
+                          onClick={() =>
+                            setSelectedPlaceForDetail(place)
+                          }
                           className="text-purple-600 hover:text-purple-700 text-xs font-semibold transition"
                         >
                           see more
@@ -567,17 +947,34 @@ export default function Favorites() {
               </button>
             </div>
             <div className="p-6">
-              <h2 className="text-3xl font-bold mb-2 break-words" style={{ overflowWrap: 'anywhere' }}>{selectedPlaceForDetail.name}</h2>
-              <p className="text-gray-600 text-lg mb-4 break-words" style={{ overflowWrap: 'anywhere' }}>{selectedPlaceForDetail.location}</p>
+              <h2
+                className="text-3xl font-bold mb-2 break-words"
+                style={{ overflowWrap: "anywhere" }}
+              >
+                {selectedPlaceForDetail.name}
+              </h2>
+              <p
+                className="text-gray-600 text-lg mb-4 break-words"
+                style={{ overflowWrap: "anywhere" }}
+              >
+                {selectedPlaceForDetail.location}
+              </p>
               {selectedPlaceForDetail.rating > 0 && (
                 <div className="flex items-center mb-6">
                   <span className="text-2xl">⭐</span>
-                  <span className="ml-2 text-xl font-semibold">{selectedPlaceForDetail.rating}</span>
+                  <span className="ml-2 text-xl font-semibold">
+                    {selectedPlaceForDetail.rating}
+                  </span>
                 </div>
               )}
               <div className="border-t border-gray-200 pt-4">
-                <h3 className="font-semibold text-lg mb-2">Description</h3>
-                <p className="text-gray-700 text-base leading-relaxed break-words" style={{ overflowWrap: 'anywhere' }}>
+                <h3 className="font-semibold text-lg mb-2">
+                  Description
+                </h3>
+                <p
+                  className="text-gray-700 text-base leading-relaxed break-words"
+                  style={{ overflowWrap: "anywhere" }}
+                >
                   {selectedPlaceForDetail.description}
                 </p>
               </div>
@@ -587,32 +984,57 @@ export default function Favorites() {
       )}
 
       {/* Add Place Dialog */}
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+      <Dialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+      >
         <DialogContent className="max-w-md bg-white rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Add a New Place</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">
+              Add a New Idea
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              Fill out the form below to add a new idea for your
+              group to explore
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             <div>
-              <Label htmlFor="name" className="text-base font-semibold">
-                Place Name *
+              <Label
+                htmlFor="name"
+                className="text-base font-semibold"
+              >
+                Idea Name *
               </Label>
               <Input
                 id="name"
                 value={newPlace.name}
-                onChange={(e) => setNewPlace({ ...newPlace, name: e.target.value })}
+                onChange={(e) =>
+                  setNewPlace({
+                    ...newPlace,
+                    name: e.target.value,
+                  })
+                }
                 placeholder="e.g., Grand Canyon"
                 className="mt-2 rounded-xl border-gray-300"
               />
             </div>
             <div>
-              <Label htmlFor="location" className="text-base font-semibold">
+              <Label
+                htmlFor="location"
+                className="text-base font-semibold"
+              >
                 Location *
               </Label>
               <Input
                 id="location"
                 value={newPlace.location}
-                onChange={(e) => setNewPlace({ ...newPlace, location: e.target.value })}
+                onChange={(e) =>
+                  setNewPlace({
+                    ...newPlace,
+                    location: e.target.value,
+                  })
+                }
                 placeholder="e.g., Arizona, USA"
                 className="mt-2 rounded-xl border-gray-300"
               />
@@ -630,20 +1052,24 @@ export default function Favorites() {
                       className="w-full h-full object-cover"
                     />
                     <button
-                      onClick={() => setNewPlace({ ...newPlace, image: "" })}
+                      onClick={() =>
+                        setNewPlace({ ...newPlace, image: "" })
+                      }
                       className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition"
                     >
                       <X size={16} />
                     </button>
                   </div>
                 )}
-                
+
                 <label
                   htmlFor="image-upload"
                   className="flex items-center justify-center gap-2 w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 rounded-xl cursor-pointer transition border border-gray-300"
                 >
                   <Upload size={18} />
-                  {newPlace.image ? "Change Image" : "Upload Image"}
+                  {newPlace.image
+                    ? "Change Image"
+                    : "Upload Image"}
                 </label>
                 <input
                   id="image-upload"
@@ -652,18 +1078,28 @@ export default function Favorites() {
                   onChange={handleImageUpload}
                   className="hidden"
                 />
-                <p className="text-xs text-gray-500">Max 2MB • JPG, PNG, or GIF</p>
+                <p className="text-xs text-gray-500">
+                  Max 2MB • JPG, PNG, or GIF
+                </p>
               </div>
             </div>
             <div>
-              <Label htmlFor="description" className="text-base font-semibold">
+              <Label
+                htmlFor="description"
+                className="text-base font-semibold"
+              >
                 Description *
               </Label>
               <Textarea
                 id="description"
                 value={newPlace.description}
-                onChange={(e) => setNewPlace({ ...newPlace, description: e.target.value })}
-                placeholder="Tell your group why you want to visit this place..."
+                onChange={(e) =>
+                  setNewPlace({
+                    ...newPlace,
+                    description: e.target.value,
+                  })
+                }
+                placeholder="Tell your group why you want to try this idea..."
                 className="mt-2 rounded-xl border-gray-300 min-h-24"
               />
             </div>
@@ -672,7 +1108,12 @@ export default function Favorites() {
                 variant="outline"
                 onClick={() => {
                   setIsAddDialogOpen(false);
-                  setNewPlace({ name: "", location: "", image: "", description: "" });
+                  setNewPlace({
+                    name: "",
+                    location: "",
+                    image: "",
+                    description: "",
+                  });
                 }}
                 className="flex-1 rounded-xl"
               >
@@ -680,12 +1121,49 @@ export default function Favorites() {
               </Button>
               <Button
                 onClick={handleAddPlace}
-                disabled={!newPlace.name || !newPlace.location || !newPlace.description}
+                disabled={
+                  !newPlace.name ||
+                  !newPlace.location ||
+                  !newPlace.description
+                }
                 className="flex-1 bg-purple-600 hover:bg-purple-700 text-white rounded-xl"
               >
-                Add Place
+                Add Idea
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Warning Dialog */}
+      <Dialog
+        open={isResetWarningOpen}
+        onOpenChange={setIsResetWarningOpen}
+      >
+        <DialogContent className="max-w-md bg-white rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">
+              Reset All Swipes?
+            </DialogTitle>
+            <DialogDescription className="text-base text-gray-600 mt-2">
+              This will mark all ideas as "unswiped" so you can
+              swipe through them again from the beginning.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 pt-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsResetWarningOpen(false)}
+              className="flex-1 rounded-xl"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleResetSwipes}
+              className="flex-1 bg-red-500 hover:bg-red-600 text-white rounded-xl"
+            >
+              Okay
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
