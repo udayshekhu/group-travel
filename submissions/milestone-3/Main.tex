@@ -1,0 +1,829 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{times}              
+% Use Times New Roman
+\usepackage{graphicx}           
+% Enhanced support for images
+\usepackage{float}              
+% Improved interface for floating objects
+\usepackage{booktabs}           
+% Publication quality tables
+\usepackage{xcolor}             
+% Driver-independent color extensions
+\usepackage{geometry}           
+% Customize document dimensions
+\usepackage{fullpage}           
+% all 4 margins to be either 1 inch or 1.5 cm
+\usepackage{comment}            
+% Commenting
+\usepackage{minted}             
+% Highlighted source code. Syntax highlighting
+\usepackage{listings}           
+% Typeset programs (programming code) within LaTeX
+\usepackage{lastpage}           
+% Reference last page for Page N of M type footers.
+\usepackage{fancyhdr}           
+% Control of page headers and footers
+\usepackage{hyperref}           
+% Cross-referencing 
+\usepackage[small,bf]{caption}  
+% Captions
+\usepackage{multicol}
+\usepackage{tikz}               
+% Creating graphic elements
+\usepackage{circuitikz}         
+% Creating circuits
+\usepackage{verbatim}          
+% Print exactly what you type in
+\usepackage{cite}               
+% Citation
+\usepackage[us]{datetime} 
+% Various time format
+\usepackage{blindtext}
+% Generate blind text
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{changepage}
+\usepackage{indentfirst}
+
+
+\input {defs.tex}
+
+
+
+\begin{document}
+
+\input{titlepage}
+\newpage
+\pagenumbering{Roman}   
+\tableofcontents
+\newpage
+\pagenumbering{arabic} 
+
+
+
+%%%%%%%%%%%%%%% NEW SECTION %%%%%%%%%%%%%%% 
+\section{Part A: Low-Fidelity Prototyping}
+\subsection{Step 1: Develop Low-Fidelity Prototype}
+
+\noindent \textbf{Link to Video Demo:}\\
+\textbf{\underline{https://drive.google.com/file/d/1tBYDOphFsov6Htmd9VJliuXOQfILXLs8/view?usp=sharing}}
+\\\\
+\textbf{Task Examples:} 
+\par
+\indent
+One of the tasks supported is budgeting and expense tracking. We specifically want to support creating an expense item, where the user can set the prices and decide the custom split between other members. Users can then mark themselves as “paid” which would give a clear view of who has remaining expenses without an overhead of mixing up who owes how much. We also want to support being able to pay a certain amount to an expense, and view the progress on a certain expense. Budgeting in our application is one of our “Must Include” requirements, as it is the most common activity and task that our field study found to be frustrating. We decided to fully implement this feature in detail to support this task due to its importance to all our participants in our field study. Plus, budgeting is an aspect that practically every group planning a vacation goes through. Including this in the scope of our prototype will allow us to explore the effectiveness of this task, and find improvements for our most important task. 
+\newline
+
+\par
+\indent
+Within the app, the users will have to select a trip, then go into the finances page by clicking the dollar sign in the navigation tab in the bottom of the page. Then, they can click on the plus icon which would pop up a modal to create a new budget record. Basic information including title, cost should be filled appropriately. Group members who are part of this expense can be selected. The users will have a choice to select a checkbox for “Split Evenly?” where if checked, the cost will be splitted up evenly among everyone associated with this expense. If not checked, the users can specify custom amounts for each person associated with the expense.
+\\
+
+\par
+\indent
+Another task supported is dealing with deciding on ideas and activities for the trip. From our field study, we found that many issues and concerns came from the lack of engagement when ideating items such as where to visit or what to do. We want to support the user creating an idea item that requires a title and description. Additionally, users are able to anonymously vote for all created ideas to express their opinions while minimizing external influence, and be able to view the status of all created ideas. This task can be used as a clear consensus point where voting “like” on an idea means that they wish to follow this idea, and vice versa. 
+\\
+
+\par
+\indent
+For this task, the user will choose a trip in the app, go to the ideas page by clicking on the heart icon in the navigation tab in the bottom of the page. Then, they can click on the plus icon which causes a modal to create a new idea to pop up. Users will be able to fill out descriptions about the idea, including the title and description. There will be a “voting view, where users can simply use the “like” or “skip” buttons to vote, or swipe to vote where left means “skip” and right means “like”. Once all group members have properly ideated and voted, they can discuss and set prioritizations based on the results.
+\newpage
+
+\subsection{Step 2: Walkthrough}
+\subsubsection{Task 1: Budgeting Interface} 
+\par
+\indent
+When creating an expense, we found a layout consistency bug in the budgeting flow. When selecting the “All” check box for a custom split, the group member list suddenly jumps from a horizontal to a vertical orientation to show input fields. This forces users to re-orient themselves mid-task, and causes confusion throughout. To fix this, we will implement a consistent vertical list with "greyed out" input boxes that simply enable when toggled, preventing the interface from moving unexpectedly. Also, during the same process for a custom split, we noticed that we do not have a clear visual indicator for how much money the user has to finish allocating after inputting the first money box. This lack of indicator unnecessarily gives the user extra cognitive load to do the math to allocate the rest of the money. 
+\newline
+\par
+\indent
+We found the progress bars to be a great visual tool for us to navigate our budgeting interface when paying for a certain expense. The “overall” progress bar for a specific expense updates along with individual progress bars for each person under that expense. This clear visual indication gives us an easy and instant way to be fully updated with the expenses. It does not require us to look at numbers and calculate how much each person has already paid, which requires a lot more cognitive load. 
+
+
+\subsubsection{Task 2: Ideation Interface} 
+When going through creating an idea, we found a navigation issue. The interface transitions directly from the "Create Idea" modal to the "Voting" screen without any visual warning or confirmation of this transition. While we did intend to implement a "forced voting" to ensure the engagement, the lack of visual indication can leave users confused about their current location in the app and how it even happened. Furthermore, this does not support users who want to create multiple ideas at once and then vote right after. To fix this, we will change the behaviour so that the creation of an idea keeps you on the “view ideas” screen instead of immediately transitioning into the voting screen. Furthermore, in the voting screen, we also noticed that we do not have a “back” button to go back to all the list of ideas. As mentioned before, “forced voting” is an intentional implementation for engagement, however, users coming from other applications that have a similar screen or system might find it confusing that they are just stuck on that screen without being able to just view the ideas if they wanted. There is no clear visual indication that they must vote for the idea. It is just a forced UI design to achieve that goal, but not actually communicated to the user. \newline
+
+
+
+\indent We found different filters for viewing ideas to be very helpful and reduces unnecessary cognitive load when looking at the statistics of each idea. Similar to the progress bar in the budgeing task, it is a quick and easy way to stay updated and see the status of the group’s decisions and which ideas they liked. This allows the group to easily make a choice later on without having to thoroughly look through all ideas individually.
+
+\newpage
+
+%%%%%%%%%%%%%%% NEW SECTION %%%%%%%%%%%%%%% 
+\section{Part B: Experiment Design}
+\subsection{Step 3: Goals of Experiment}
+\subsubsection{Goals Ranked by Importance:}
+\begin{enumerate}
+    \item{Does our budgeting interface reduce the perceived mental effort and frustration that comes with financial distribution compared to spreadsheets?}
+    \item{Does our budgeting interface make it faster to interpret and manage financial distributions than using spreadsheets? }
+    \item{Does our idea creation and voting interface enable users to be more confident and  engaged in the ideation process compared to a group chat poll?}
+    \item{Does our idea creation and voting interface reduce cognitive workload and frustration that comes with the ideation process compared to a group chat poll?}
+    \item{Does our idea creation and voting interface reduce potential pet peeves caused by natural “followers”?}
+\end{enumerate}
+\subsubsection{Goals Ranked by Our Ability to Test:}
+\begin{enumerate}
+    \item{Does our budgeting interface make it faster to interpret and manage financial distributions than using spreadsheets? }
+    \item{Does our budgeting interface reduce the perceived mental effort and frustration that comes with financial distribution compared to spreadsheets?}
+    \item{Does our idea creation and voting interface reduce cognitive workload and frustration that comes with the ideation process compared to a group chat poll?}
+    \item{Does our idea creation and voting interface enable users to be more confident and  engaged in the ideation process compared to a group chat poll?}
+    \item{Does our idea creation and voting interface reduce potential pet peeves caused by natural “followers”?}
+\end{enumerate}
+
+\subsubsection{Final Goals:}
+\begin{enumerate}
+    \item{Does our budgeting interface make it faster to interpret and manage financial distributions than using spreadsheets? }
+    \item{Does our budgeting interface reduce the perceived mental effort and frustration that comes with financial distribution compared to spreadsheets?}
+    \item{Does our idea creation and voting interface reduce cognitive workload and frustration that comes with the ideation process compared to a group chat poll?}
+\end{enumerate}
+
+
+\newpage
+
+\subsection{Step 4: Experiment Design}
+\subsubsection{Participants} 
+\par
+\indent
+We are planning to recruit around 12 participants (6 male, 6 female) who are around 18-25 years old. Participants will be recruited through convenience sampling, which will all be through our university friends. The professions of the participants will vary, however, we are ideally aiming to get an equal diversity of professions; for example, we will try to avoid recruiting all Computer Science students for the experiment. Each participant will go through a pre-screening to ensure that they have some experience with group traveling, in order to increase external validity; we will ask the participant’s frequency of travelling, and filter those who have not group traveled at least once in the past 2 years. Participants will be rewarded with a snack.
+
+\subsubsection{Conditions}
+\noindent 
+\textbf{Part 1: Budgeting Task}
+\\
+\underline{Condition A (Baseline):} Participants will use a Google Sheet, with a pre-set budgeting template that is popular online. This template will be edited so that it includes columns for expense names, costs, the payer and member financial distribution for that expense. There will be fields for tracking payments for members. 
+\\
+\underline{Condition B (Changed):} Participants will use our Budgeting feature, which includes creating an expense, managing member financial distributions, and viewing and tracking payments for members.
+\\
+
+\noindent
+\textbf{Part B: Ideation Task}
+\\
+\underline{Condition A (Baseline):} Participants will use a Telegram group chat, and use a poll to create, vote and view different ideas for activities/destinations. There will be other chats and votes in between the polls to mimic a real group chat environment.
+\\
+\underline{Condition B (Changed):} Participants will use our Ideation feature, which includes creating an idea ‘card’, voting for an idea using a “like or skip” voting system, and viewing all created ideas. 
+
+\subsubsection{Tasks}
+\textbf{Task 1: Budgeting Task}
+
+\par
+\indent
+Participants are given a scenario with a group of 5 for travel, where the trip has come to an end and the group has to manage final expenses. There will be pre-loaded expenses in the interface used. Participants have to create 3 expenses, with each expense involving different people in the group, and different types of financial distribution. Participants then have to mark specific payments for specific expenses. After the last marked payment, the task ends.
+\\\\
+\indent \textbf{Task 2: Ideation Task}
+\par
+\indent
+Participants are given a scenario with a group of 5 for travel, where the group is at the planning phase and is deciding on different activities. Participants are shown 5 ideas and they are required to vote on each idea. The participant is then asked to find the top 2 most liked tasks and the top 2 least liked tasks, in which after identifying correctly, the tasks end.
+
+\subsubsection{Design}
+\par
+\indent
+We will utilize a within-subject experimental design for both the budgeting and ideation tasks for a couple of reasons. First, this approach allows each participant to directly compare the 2 interfaces, as some participants might not have experience with using both a budgeting app and a budgeting spreadsheet for group travel (applies to ideation interfaces too). This comparison also opens up potential comparison insight during the post-interview that cannot be discovered with a between-subject design. Furthermore, since we have controlled the level of Excel expertise, a within-subjects design will account for any other individual variability that our participants have, which we would not be able to do if we ran between-subjects with the same amount of participants. Finally, given our resources and time constraints, a within-subject design is the most feasible due to the amount of participants we could get. \newline
+
+\par
+\indent
+Due to the within-subject design, we will counterbalance both the order of tasks done (budgeting and ideation), and which interface is used within that specific task, which will mitigate order effects between task interfaces. Furthermore, to further reduce order effects, each specific task scenario will be slightly different but with the same difficulty; for example, when budgeting, the number of group member, names, and overall scenario will be the same, however the financial splits and costs needed to do will be slightly different but of similar difficulty. This concept will be similarly applied to the ideation task, where the idea may differ but will have the same genre and similar location as possible. 
+
+
+\subsubsection{Procedure}
+\par
+\indent
+The experiment requires participants to complete two distinct activities: a Budgeting task and an Ideation task. To mitigate order effects, both the overarching tasks and the interfaces tested within each task will be counterbalanced across participants.  \newline
+
+\par
+\indent
+Upon arrival, participants will provide informed consent and complete a pre-experiment survey designed to capture their demographics and prior experience with group travel, spreadsheet applications, and group chat polling features. \newline
+
+\par
+\indent
+For each of the two main activities, participants will follow a standardized sequence. First, we will introduce participants to their randomly assigned initial interface and give a two-minute unstructured exploration period to familiarize themselves with the environment. This exploration phase will help determine the intuitiveness of interfaces involved in this experiment since participants will have to solely rely on their skills obtained through this process. \newline
+
+\par
+\indent
+Following this sandbox phase, participants will be asked to execute the required task given a specific situational scenario. For the budgeting task, an experimenter will start the timer up to the point they complete the task. Tasks will be considered to be completed when the participants successfully identify the asked information. Immediately upon task completion, participants will then fill out a post-task questionnaire to measure perceived mental effort, frustration, and usability; specifically, they will fill out the NASA Task-Load Index (TLX) using the 20-point scale to measure these aspects. For the budgeting task, we will also stop the timer right after the task completion. \newline
+
+\par
+\indent
+This exact sequence, a two-minute exploration, scenario execution, and immediate post-task questionnaire will then be repeated using the alternate interface for that same activity. Participants will be given a three minute break between each interface-level test. They will also be given a 5 minute break between the budgeting task and the ideation task. Once participants complete both tasks, the researcher will conduct a short, semi-structured interview to gather qualitative feedback regarding user frustrations, specific interaction pain points, and overall interface preference.
+
+
+\subsubsection{Apparatus}
+
+\par
+\indent
+The experiment will be in a small booked room in the university, with one big table and the participants sitting across from us. The spreadsheet portion of the tasks will be done on a 14’’ MacBook Pro with a 1920 X 1080 display resolution, and an external mouse connected to it. Rest will be done on IPhone 13. The tasks were also screen recorded, as well as live recorded through a Discord shared screen in order for us to navigate through the tasks and end at the proper time. We will use a digital timer to keep time for the budgeting task. The NASA TLX assessment was conducted by paper. The brief interviews in between were also audio recorded for later analysis and observations. To implement our application interface, we used Figma Make and React to create a mobile-like interface on a website.
+
+\subsubsection{Independent Variables}
+\noindent
+\underline{The interface used (our application, Google Sheets, Telegram)}
+
+\subsubsection{Dependent Variables}
+\noindent
+\textbf{For Budgeting Task:} \underline{Time it takes to finish task}, \underline{Perceived workload of task (NASA TLX)}
+\\
+\\
+\textbf{For Ideation Task:}  \underline{Perceived workload of task (NASA TLX)}
+
+\subsubsection{Hypothesis}
+\begin{enumerate}
+    \item{
+    \textbf{$H_0$: } There is no difference in time that takes to complete the budget task using our interface and a spreadsheet.  
+    \\
+    \textbf{$H_1$: } Users using our interface take less time to complete the budget task than those using a spreadsheet. 
+    }
+    \item{
+    \textbf{$H_0$: } There is no difference in the perceived mental effort and frustration that comes with financial distribution when using our interface and a spreadsheet.
+    \\
+    \textbf{$H_1$: } Users using our interface perceive less mental effort and frustration than those using the spreadsheet. 
+    }
+    \item{
+    \textbf{$H_0$: } There is no difference in the perceived cognitive workload and frustration when suggesting and voting on trip ideas between our interface and a group chat poll.
+    \\
+    \textbf{$H_1$: } Users will report significantly lower cognitive workload and frustration when using our interface to suggest and vote on trip ideas compared to a group chat poll.
+    }
+\end{enumerate}
+
+\subsubsection{Planned Statistical Analysis}
+\indent
+\par
+\indent
+Since we are utilizing a within-subject design with one independent variable (the interface) that has exactly two conditions (baseline vs. prototype), we will use paired-samples t-tests to analyze our quantitative data.
+\begin{enumerate}
+    \item \textbf{Task 1 (Budgeting Completion Time):} We will use a paired-samples t-test to compare the continuous time data (measured in seconds) it takes participants to complete the budgeting task using the spreadsheet versus our prototype.
+    \item \textbf{Task 1 \& 2 (NASA-TLX Workload):} For both tasks, we will calculate the overall NASA-TLX workload score for each participant. We will then use paired-samples t-tests to determine if there is a statistically significant difference in the perceived cognitive workload and frustration scores between the baseline and our prototype.
+    \item \textbf{Qualitative Analysis:} The open-ended responses from the post-task interviews and questionnaires will be reviewed to identify common user patterns. We will categorize recurring pain points and positive interactions to help explain the reasoning behind the quantitative results found in our t-tests.
+
+
+\end{enumerate}
+
+\subsubsection{Expected Limitations}
+\par
+\indent
+The most obvious limitation is that we were only able to get individuals to play out group scenarios, which is a threat to external validity. The group scenarios we have written are thorough and help a lot to visualize a real group planning situation. Playing these scenarios out with individuals can capture individual behaviours in a group that can be applicable to a real group setting, however without truly working in a group with other participants, we cannot fully conclude that the results and behaviours would be the same. For example, a participant may be more engaged when doing our individual task, but when put in a real group setting, they may act more hesitant and less engaging. This is especially present with our ideation phase, where voting and making a decision on an idea would usually require extra discussions with other group members instead of just voting based on a poll or on a screen. \newline
+
+\par
+\indent
+The participant’s level of expertise on the competitor tools can also be a limitation. Allowing all participants of varying spreadsheet expertise can give us results that can be generalized to a wider population, however for students in fields such as accounting, or other people who work with spreadsheets frequently, it is very plausible that using the spreadsheet template will be much faster and intuitive compared to our tool. We recognize this limitation, and realize that introducing a different level of expertise would require more resources and time to sample the right participants. This would also result in a more complex experiment design as it could be an additional factor for our tasks and analysis. Given limited time, we had to risk a trade off a more complicated participant screening with quickly picking out available participants. \newline
+
+
+\par
+\indent
+Finally, a potential limitation is that participants may not provide fully accurate answers to our questionnaires, due to biases and order effects. For instance, an issue may arise due to the combination of our participants being our personal friends and family members, and being aware that they are testing an interface that we created. The participants can subconsciously know that we are trying to see if our made application is better than what exists, so the subjective assessments like the NASA TLX might be influenced. It is important to note that counterbalancing may reduce the risk that comes from an order effect, but does not fully eliminate it; participants may get a better idea of how the task should be completed after experiencing it using the first interface. Within the scope of our course, this limitation is an aspect we are forced to consider. However, for future explorations we could sample participants through the campus grounds, and run a between-subjects design in order to reduce this comparison bias that participants might get. 
+
+
+
+\newpage
+
+\section{Part C: Medium-Fidelity Prototyping}
+\subsection{Step 6: Medium Fidelity Prototype Implementation}
+
+\subsubsection{Rationale of Prototyping Approach}
+% \hspace{1.5em}The prototype was designed to support the main elements and tasks in our experiment while minimizing development time, since the system is intended for testing. We used a combination of horizontal and vertical prototyping. \newline
+
+Earlier in this milestone, we identified budgeting and ideation to be our primary focus for the experiment, thus we have chose to make those two pages more vertically developed, leaving the rest of our features to be horizontally implemented. We focused on budgeting since it seemed to be a pressing concern, and we focused on ideation since we found that followers lack participation in the ideation phase. \newline
+
+Horizontally, the prototype includes the main pages of the application so users can understand the overall structure of the system and flow of it all, such as trip management, group members, budgeting and idea sharing. However, as stated, select areas have intentionally not been implemented as they will not be relevant in our experiment. For example, the group members and task management sections are virtually static and are only present for participants to understand how the system would look in a complete version. \newline
+
+Vertically, the prototype focused on the finance/budget and idea sharing features. These components are the main focus of our experiment, so we made sure to implement interactive functionality focused on supporting our study participants. Since we do not have a feature like a user login, which would be a core part of our group-based app, our prototype will fake it by hard-coding users. This will help the participants experience realistic interactions without requiring a full-fledged prototype. \newline
+ 
+Appearance was important to us, since it lowered mental fatigue which we want to see in our experiment compared to spreadsheets and group chats. With our visual design, we focused on targeting HCI principles that would support our experiment goals. As covered before, our experiment goals centered around creating an interface that reduced cognitive load and overall made it easier for people to manage their budgeting and idea creation. We did this through visual design in many ways. For example, we made sure to make use of a few simple and key colours like green to represent financials and successes and red for errors. We also included progress bars to make it clearer how much of an expense was finished. \newline 
+
+The prototype was developed using multiple tools. Paper sketches were first used to create the low-fidelity prototype to define the basic layout. The expense layout was then recreated in Figma manually using shapes and overlay boxes to organize the interface structure and interactions. Finally, using both our Figma layout and paper prototypes, Figma Make was used to generate a React-based implementation, allowing us to create interactive behavior. The generated code was further modified to support the interactions required for the experiment, and minimize the effort as for a medium fidelity prototype.  \newline
+
+Overall, the approach focuses development effort based on the features we will be testing during our experiment while keeping the rest of the system minimal but understandable for participants. 
+
+
+\newpage
+
+
+\subsubsection{Prototype Illustrations}
+\textbf{We will be referring to the Low Fidelity Prototype plenty of times; we will use the abbreviation \underline{LFP} to shorten this.}
+
+
+\paragraph{Horizontal Aspects}
+\indent
+\par
+\indent
+For our horizontal aspects, we kept the general layout similar to the LFP, however we simplified the home page even more to include both group members and itinerary on the same page instead of having to click a card to open these sections. The one part we wanted to display is the user that is "logged in", which we achieved by including a "Me" beside the logged in user. This still captures the high level parts of these screens, without having any implementation within them. The buttons are coloured to stay consistent with the other screens, however there is no functionality present on both pages.  If a button is clicked, a small modal that shows "Not Implemented" appears.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\linewidth]{prototype/HomePage.png}
+        \hspace{0.5cm} % Adds a specific physical gap between them
+        \includegraphics[width=0.4\linewidth]{prototype/TasksPage.png}
+        \caption{The Home and Tasks screens side-by-side.}
+    \end{figure}
+\newpage
+
+\paragraph{Vertical Aspects: Expenses}
+\indent
+\par
+\indent
+The first major change is in the expenses section. In our LFP, we approached the expenses from a single-user perspective, where the logged in user can only pay for their expenses that they are a part of. Now, we have changed it to a group perspective, where users will still see their own name (marked with 'Me'), but any user is free to create, pay, and view expenses that they are not a part of. We wanted to make this change to foster more of the "group leader" aspect that we found in our field study; this change still allows individual members of the group to clearly see their own name, while allowing group leaders to manage every member's finances even if they are not a part of them. We will show this aspect in detail when going over each individual part of the financial page.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{prototype/FinancialsPage.png}
+    \caption{The Financials page, showing different expenses. The "Hotel" expense does not include the logged in user, however they can still manage that expense and 'Pay Up'}
+\end{figure}
+
+\newpage
+
+\par
+\indent
+When creating a new expense, the main difference from the LFP is that you can select the person who will be paying for this expense. Note that this does not mean that the payer is part of the split; a group member can pay for an expense in real life and not actually be part of the split. We have also added percentages as an additional option to splitting by dollars, as it can potentially be a quicker and intuitive way to split the finances.
+\\
+\par
+\indent
+Using purple for the person paying, the user can easily identify them out of the rest of the members. The status messages at the top right are also designed to be green to be 'valid' and red to be 'invalid'; colors that are associated with success and failure. 
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\linewidth]{prototype/BasicAddExpense.png}
+\caption{Brief overview of the "New Expense Features", along with small captions of small improvements.}
+\end{figure}
+
+    \par
+    \indent
+    When splitting, our system defaults to an "auto-split"; that is, when entering numbers for one member, the system will automatically split the rest of the money to the other members. This auto-split will be displayed as a gray input for the other members, in case the user still wants to manually change the other inputs. This  results in less cognitive workload for the user when making complicated splits.
+    \par
+    \indent
+    
+    Furthermore, we have explicit validity checks for manual splits; it is very easy to make a manual error when not relying on automatic splits, so we wanted to make sure the user knows where they are going wrong. This feedback was something that we prioritized when implementing this distribution feature, as distributing finances can be the biggest point of error that our users might encounter.
+    \par
+    \indent
+    
+     \textbf{The illustrations on the next page demonstrate some of these validity behaviours.}
+    
+    \begin{figure}[H]
+    \centering
+    % Left Image Box
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/Auto-split default.png}
+        \caption{A valid "auto-split" behaviour for dollar splits}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/percentages.png}
+        \caption{A valid "auto-split" behaviour for percentage splits}
+    \end{minipage}
+    \end{figure}
+
+    \vspace{10pt}
+    Note: When there is an invalid split, and the user tries to click the "Add Expense" button, the red text will shake in order to communicate to the user what their error is.
+    
+    \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/autosplit-over.png}
+        \caption{Invalid "auto-split" behaviour due to the manual splits being over the total}
+    \end{minipage}
+    \hfill
+        \begin{minipage}{0.45\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{prototype/autosplit-under.png}
+            \caption{Invalid "auto-split" behaviour due to the manual splits being under the total}
+            \label{fig:tasks}
+        \end{minipage}
+    \end{figure}
+    
+
+
+
+    \newpage
+
+    For each expense card, there are multiple progress bars for the total expense and for each person paying. One behaviour that stands out is if the expense's 'payer' is also included within the split, they will be included in the progress bar list. Their progress bar will always be completed from the start, as a person cannot pay themselves. However, we wanted this to be explicitly seen by users, as having this behaviour hidden and implicit can cause users to be more confused. Similarly to the errors, the color green indicates progress and red means 'in-progress', which match past user associations with these colours. The expense 'payer' is also colored purple to differentiate from the other members. 
+
+    \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/collapsed.png}
+        \caption{Collapsed expense card, displaying the total progress through text and a progress bar}
+    \end{minipage}
+    \hfill 
+    \centering
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{expanded-expense.png}
+        \caption{Expanded expense card, dipsplays all progress bars and distinguishes the 'payer' from the rest of the members}
+    \end{minipage}
+    \end{figure}
+
+    When making a payment, the main difference from the LFP is that no matter which user is logged it, they can mark anyone as paid, to support the idea mentioned before. We have also grayed out users that have already paid for a certain expense.
+    After a user has paid, the expense will go to the bottom under a "Paid Expense" section; this is to help minimize the time it takes for users to look through a history of expenses. 
+
+    \enlargethispage{2cm}
+    \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.40\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/pay-up.png}
+        \caption{Recording payments; people who have paid cannot be selected, and there are quick \% buttons for common totals}
+    \end{minipage}
+    \hfill 
+    \centering
+    \begin{minipage}{0.40\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/paid-expenses.png}
+        \caption{An example of a paid expense in its own section.}
+    \end{minipage}
+    \end{figure}
+    
+
+\paragraph{Vertical Aspects: Ideation Page}
+\indent
+\par
+\indent
+For the ideation page, the main difference from the LFP is the "Start Swiping" button, which allows users the freedom to switch between "Swiping" and viewing ideas, fixing our main navigation issue in the walkthrough. Another difference is the ability to cast a "like" on certain activities without swiping; we wanted to give the user more freedom and flexibility when making their liked decisions, and the ability to reverse without going back to swiping. The last main difference is "see more", which has a basic implementation in this prototype.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\linewidth]{prototype/ideation-main.png}
+        \caption{The Financials page, showing different expenses. The "Hotel" expense does not include the logged in user, however they can still manage that expense and 'Pay Up'}
+    \end{figure}
+
+    \enlargethispage{3cm}
+    \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.38\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/create-idea.png}
+        \caption{Creating a new idea, where * are required fields with input validation}
+    \end{minipage}
+    \hfill 
+    \centering
+    \begin{minipage}{0.38\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/idea_more.png}
+        \caption{An example of a "see more" modal}
+    \end{minipage}
+    \end{figure}
+
+    
+    \newpage
+
+
+    When on the swiping section, the main difference from the LFP is that it tracks the previous votes of the users. If a user votes on an idea (either by swiping or liking in the main page), the prototype will save this state, in order to only swipe on non-voted ideas. This can reduce user frustration when new ideas are made on top of already voted ideas. There is also a button to go back to the main view page, which addresses another walkthrough navigation issue.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8\linewidth]{prototype/swiping.png}
+        \caption{Swiping Screen}
+    \end{figure}
+
+    \enlargethispage{3cm}
+    \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.38\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/left-swipe.png}
+        \caption{Swiping left to 'ignore', will still count as a vote. It does not decrease the amount of likes on an idea.}
+    \end{minipage}
+    \hfill 
+    \centering
+    \begin{minipage}{0.38\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/right-swipe.png}
+        \caption{Swiping right to 'like' the idea}
+    \end{minipage}
+    \end{figure}
+    
+    
+    \newpage
+
+
+    After voting on all, we give the user the option to "swipe again", which will reset all the user's votes on each idea; this allows the user to go through the swiping process, in the case the user wants to re-evaluate lots of the ideas through swiping. However, when users have voted on all ideas, and a new idea is created, the "start swiping" button will be active and it will start from the newest idea. 
+
+
+     \begin{figure}[H]
+    \centering
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/reset-swiping.png}
+        \caption{After liking all votes, the "Swipe Again" option is active}
+    \end{minipage}
+    \hfill 
+    \centering
+    \begin{minipage}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{prototype/reset-swipe-modal.png}
+        \caption{Confirmation modal to reset all swipes; red to warn the user}
+    \end{minipage}
+    \end{figure}
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.5\linewidth]{prototype/new-idea-swipe.png}
+        \caption{When all ideas have been voted, and after creating a new idea, "Start Swiping" is active and starts on the new idea }
+    \end{figure}
+    
+
+
+
+
+\newpage
+\appendix
+
+\section{Experiment Design}
+\subsection{Pre-Experiment Survey}
+\begin{enumerate}
+    \item \textbf{What is your age?}
+
+    \item {\textbf{What is your gender?}
+        \begin{enumerate}
+            \item Male
+            \item Female
+            \item Non-binary/Prefer not to say
+        \end{enumerate}
+        
+    }
+
+    \item \textbf{What is your current major/profession?}
+
+    \item {\textbf{In the past 2 years, approximately how many group trips (involving 3 or more people) have you participated in?}
+        \begin{enumerate}
+            \item 0
+            \item 1-2 
+            \item 3-5
+            \item 6+
+        \end{enumerate}
+        
+    }
+
+    \item {\textbf{How would you rate your overall proficiency with spreadsheet software (e.g., Google Sheets, Microsoft Excel)?}
+        \begin{enumerate}
+            \item Beginner (I rarely use them or only do basic data entry)
+            \item Intermediate (I comfortably use basic formulas like SUM or AVERAGE)
+            \item Advanced (I regularly use complex formulas, pivot tables, or macros)
+        \end{enumerate}
+        
+    }
+
+    \item {\textbf{When planning activities or making decisions in a group chat (e.g., Telegram, iMessage, WhatsApp), how often do you use built-in polling/voting features?}
+        \begin{enumerate}
+            \item Frequently (Almost every time a group decision needs to be made)
+            \item Occasionally (Sometimes, for major decisions)
+            \item Rarely (We usually just type out our votes/opinions)
+            \item Never (I have never used a group chat poll)
+            
+        \end{enumerate}
+        
+    }
+
+    
+\end{enumerate}
+
+\newpage
+\subsection{Detailed Tasks}
+
+\subsubsection{Budgeting Tasks}
+\paragraph{Condition A (Baseline - Spreadsheet): Graduation Trip to Montreal}
+\begin{itemize}
+    \item \textbf{Context: }You went on a graduation trip to Montreal with four friends (Jamie, Casey, Morgan, and Riley). During the trip, your group divided up the payment responsibilities.
+    
+    \item {\textbf{Expenses to Input:}
+    \begin{itemize}
+        \item You paid for the round-trip train tickets: \$538.92
+        \item Jamie paid for the Airbnb booking: \$1245.50
+        \item Casey paid for the group dinners: \$312.44
+    \end{itemize}
+    }
+    
+    \item \textbf{The Distribution Rule:} Riley arrived late and did not attend the group dinners. Therefore, Riley is excluded from the dinner expense split. All other expenses are split evenly among everyone who participated.
+    
+    \item \textbf{Task:} Input these three expenses into the spreadsheet, and identify exactly how much each member owes to the payers.
+\end{itemize}
+
+\paragraph{Condition B (Changed - Budgeting Interface): Graduation Trip to Banff}
+\begin{itemize}
+    \item \textbf{Context: }You went on a graduation trip to Banff with four friends (Alex, Sam, Taylor, and Jordan). During the trip, your group divided up the payment responsibilities.
+    
+    \item {\textbf{Expenses to Input:}
+    \begin{itemize}
+        \item You paid for the flight tickets: \$542.18
+        \item Alex paid for the cabin rental: \$1234.75
+        \item Sam paid for the shared groceries: \$301.22
+    \end{itemize}
+    }
+    
+    \item \textbf{The Distribution Rule:} Taylor has dietary restrictions and did not eat the shared groceries. Therefore, Taylor is excluded from the grocery expense split. All other expenses are split evenly among everyone who participated.
+    
+    \item \textbf{Task:} Input these three expenses into the app, and identify exactly how much each member owes to the payers.
+\end{itemize}
+
+\subsubsection{Ideation Tasks}
+
+\paragraph{Condition A (Baseline - Telegram Poll): Planning a Trip to Seoul}
+\begin{itemize}
+    \item \textbf{Context: }You and your four friends are planning a trip to Seoul. You are currently in the Telegram group chat deciding on activities.
+    \item \textbf{Setup: }The chat contains 5 distinct dummy messages (e.g., "Has anyone checked the weather?", "I need coffee first," etc.) interspersed evenly with 5 separate polls for different activities (e.g., N Seoul Tower, Myeongdong Shopping, Hongdae Street Food, Gyeongbokgung Palace, Bukchon Hanok Village).
+    \item {\textbf{Task}
+    \begin{enumerate}
+        \item Scroll through the chat and vote "Yes" on 3 specific activities and "Skip" on 2 specific activities.
+        \item Review the final vote counts on all 5 polls.
+        \item Identify and name the top 2 most popular activities and the top 2 least popular activities based on the group's total votes.
+    \end{enumerate}
+    }
+\end{itemize}
+
+\paragraph{Condition B (Changed - Ideation Interface): Planning a Trip to Tokyo}
+\begin{itemize}
+    \item \textbf{Context: }You and your four friends are planning a trip to Tokyo. You are using the ideation feature to decide on activities.
+    \item \textbf{Setup: }The app interface contains 5 idea cards (e.g., Mount Fuji Tour, Tsukiji Fish Market, Akihabara Arcade, Shibuya Crossing, Meiji Shrine). To simulate the reading load of the Telegram messages, each card includes a short, one-sentence description of similar length to the dummy texts.
+    \item {\textbf{Task}
+    \begin{enumerate}
+        \item Navigate the interface and vote "Like" on 3 specific activities and "Skip" on 2 specific activities. 
+        \item Switch to the results/list view to see the final vote counts. 
+        \item Identify and name the top 2 most popular activities and the top 2 least popular activities based on the group's total votes.
+    \end{enumerate}
+    }
+\end{itemize}
+
+\subsection{Post Task Questionnares}
+\paragraph{General Questions: }
+\begin{enumerate}
+    \item Now that you’ve used both sets of tools, what are your immediate thoughts on how they are compared? 
+    \item If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why? 
+    
+\end{enumerate}
+
+\paragraph{Budgeting Task Questions: }
+\begin{enumerate}
+    \item Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app? 
+    \item Did you feel confident that the final totals were correct in both interfaces? Why or why not? 
+    \item What was the most frustrating part of using the spreadsheet?
+    \item What was the most frustrating part of using our prototype? 
+    \item Was there anything you wanted to do in either interface that you couldn’t figure out how to do easily? 
+\end{enumerate}
+
+\paragraph{Ideation Task Questions: }
+\begin{enumerate}
+    \item How did our prototype change the way you thought about the ideas, compared to just clicking a poll in a chat? 
+    \item When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?
+    \item What was the most frustrating part of using the poll in a group chat?
+    \item What was the most frustrating part of using our prototype?
+    \item Did the chat environment feel more natural for planning, or did you prefer using our prototype? Why?
+\end{enumerate}
+
+\subsection{References/Images for Experiment}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/Budget_Template_Instructions.png}
+    \caption{Spreadsheet Budgeting Template Instructions}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/Budget_Template_Cost_Info.png}
+    \caption{Spreadsheet Budgeting Template Cost Information Input Section}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/Budget_Template_Cost_Delegation.png}
+    \caption{Spreadsheet Budgeting Template Cost Delegation Input Section}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/Budget_Template_Overview.png}
+    \caption{Spreadsheet Budgeting Template Group Budget Overview}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/Group_Chat_Poll_Example.png}
+    \caption{Telegram Group Chat Poll Example}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{figures/TLX.png}
+    \caption{NASA Task Load Index}
+\end{figure}
+
+\subsection{References}
+Zach. (2020, September 20). \textit{Updated \& Improved - Google Sheets Expense Split Template, }CHEAT SHEETS. \href{https://www.cheatsheets.blog/post/split-expenses-updated}{https://www.cheatsheets.blog/post/split-expenses-updated}
+\\
+National Aeronautics and Space Administration. (2022, June 15). \textit{NASA TLX PAPER/PENCIL VERSION}. \href{https://humansystems.arc.nasa.gov/groups/tlx/tlxpaperpencil.php}{https://humansystems.arc.nasa.gov/groups/tlx/tlxpaperpencil.php}
+
+\newpage 
+\section{Medium Fidelity Prototyping: Detailed use of Figma Make (Generative AI)}
+\paragraph{Early Medium-Fidelity Prototyping Process}
+\indent
+\par
+\indent
+When starting our process to go from low to medium fidelity, we utilized baseline \textit{Figma}, where we were able to create a non-interactive interface based off of our paper prototype: 
+
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\linewidth]{genai/paper.png}
+        \hspace{0.5cm} % Adds a specific physical gap between them
+        \includegraphics[width=0.4\linewidth]{genai/figma.png}
+        \caption{Comparison of the low-fidelity prototype and the manually created Figma interface side-by-side.}
+    \end{figure}
+
+\par
+\indent
+Using this non-interactive interface, along with some pictures of our low-fidelity paper screens, we transitioned into using \textit{Figma Make}. To start, we gave Figma our non-interactive interface, and prompted it to create an experimental traveling application based on it. This gave us a baseline application that was able to do basic navigation through the pages and basic functionality of our features, and we then iterated on this initial version with over a hundred prompts. Our prompts were a mix of general prompts where we provided a general description of the functionality we wanted and the AI was given room to create it, and specific prompts where we had more focused ideas for how particular interactions should be.
+\par
+\indent
+With our more general prompts, the AI would often give a default behavior that would not exactly match what we wanted. As stated, with our more focused prompts (and some manual code editing), we drove the prototype in the direction we wanted. In particular, we wanted to more closely match the interactions that we had with our low-fidelity prototype as well as and build in extra functionality to improve user experience. Afterward, we also started to remove unnecessary implementations that the AI generated, to ensure the prototype is as minimal as needed for the experiment. However, we recognize that with our method, some aspects of the output from our general prompts were things that we did want to keep in our final product.
+
+\paragraph{Mid-Late Medium-Fidelity Prototyping Process}
+\indent
+\par
+\indent
+Through the iteration process, we had a variety of prompts. Prompts were mainly things like changing small interactions, colors, behaviors/logic, sizes of components, bug fixes, and removal of components/elements. We will talk about some of the key prompt types that we used through the prototyping process. 
+
+\par
+\indent
+Because the initial output from our AI prompts would include interactions that at times we did not want, we had to do lot of tweaking when implementing verticality into our system. For example, when creating a new expense, the AI's output would initially allow the user to click the 'Add Expense' button even if the output was not valid. It would even use pop-up browser alerts, which disrupts the user and is not a user-friendly experience. To create a better user experience, we prompted it to instead gray out the button so that they cannot submit when the splits are invalid. 
+\\ 
+\par
+\indent
+\textbf{Examples of prompts to tweak small interactions and logic are listed below:}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.40\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{genai/grey_out_button.png}
+    \caption{Prompt to remove alerts and gray out the "Add Expense" button}
+\end{minipage}
+\hfill 
+\centering
+\begin{minipage}{0.40\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{genai/grey-out-addition.png}
+    \caption{Prompt to change the fields to red on error, and to shake the red text when clicking the grayed out button}
+\end{minipage}
+\end{figure}
+
+\enlargethispage{3cm}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.40\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{genai/paid-person.png}
+    \caption{Prompt to explicitly display the payer as part of the progress bar list, instead of implicit}
+\end{minipage}
+\hfill 
+\centering
+\begin{minipage}{0.40\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{genai/unswiped.png}
+    \caption{Prompt to implement a 'reset swiping' behaviour}
+\end{minipage}
+\end{figure}
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.40\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{genai/auto-split.png}
+    \caption{Prompt to explicitly display the payer as part of the progress bar list, instead of implicit}
+\end{minipage}
+\hfill 
+\centering
+\begin{minipage}{0.40\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{genai/paid-expenses.png}
+    \caption{Prompt for the behaviour of settled/paid up expenses}
+\end{minipage}
+\end{figure}
+
+\par
+\indent
+There were also lots of prompts to do small visual tweaks and consistency changes in order for the application's appearance to be polished, ranging from color changes to size, position, and other visual aspects of components. 
+
+\\
+\\
+\par
+\indent
+\textbf{Examples of prompts to tweak visual aspects are listed below}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}{0.40\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{genai/grey-money.png}
+    \caption{Prompt to change the visuals on the total dollar amount}
+\end{minipage}
+\hfill 
+\centering
+\begin{minipage}{0.40\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{genai/horizontal-prompt.png}
+    \caption{Prompt to change the visual part of the horizontal display on the home page; prompted after inputting the paper prototype}
+\end{minipage}
+\end{figure}
+
+\par
+\noindent
+
+
+\end{document}

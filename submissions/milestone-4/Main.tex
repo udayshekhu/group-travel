@@ -1,0 +1,1116 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{times}              
+% Use Times New Roman
+\usepackage{graphicx}           
+% Enhanced support for images
+\usepackage{float}              
+% Improved interface for floating objects
+\usepackage{booktabs}           
+% Publication quality tables
+\usepackage{xcolor}             
+% Driver-independent color extensions
+\usepackage{geometry}           
+% Customize document dimensions
+\usepackage{fullpage}           
+% all 4 margins to be either 1 inch or 1.5 cm
+\usepackage{comment}            
+% Commenting
+\usepackage{minted}             
+% Highlighted source code. Syntax highlighting
+\usepackage{listings}           
+% Typeset programs (programming code) within LaTeX
+\usepackage{lastpage}           
+% Reference last page for Page N of M type footers.
+\usepackage{fancyhdr}           
+% Control of page headers and footers
+\usepackage{hyperref}           
+% Cross-referencing 
+\usepackage[small,bf]{caption}  
+% Captions
+\usepackage{multicol}
+\usepackage{tikz}               
+% Creating graphic elements
+\usepackage{circuitikz}         
+% Creating circuits
+\usepackage{verbatim}          
+% Print exactly what you type in
+\usepackage{cite}               
+% Citation
+\usepackage[us]{datetime} 
+% Various time format
+\usepackage{blindtext}
+% Generate blind text
+\usepackage[utf8]{inputenc}
+\usepackage{array}
+\usepackage{makecell}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{changepage}
+\usepackage{indentfirst}
+\usepackage{soul}
+\usepackage{enumitem}
+\usepackage{pdfpages}
+
+
+\input {defs.tex}
+
+
+
+\begin{document}
+
+\input{titlepage}
+\newpage
+\pagenumbering{Roman}   
+\tableofcontents
+\newpage
+\pagenumbering{arabic} 
+
+
+
+%%%%%%%%%%%%%%% NEW SECTION %%%%%%%%%%%%%%% 
+\section{Part A: Experiment Execution}
+
+\subsection{Step 1: Pilot Testing} 
+\par
+\indent
+We conducted a pilot study with two subjects to validate our experimental conditions, identify potential bottlenecks, and refine our methodology prior to the main experiment. The pilot revealed several areas requiring adjustment, primarily regarding task appropriateness and instruction clarity.
+
+First, subjects initially found the Budgeting task instructions ambiguous, which caused confusion, increased completion times, and exaggerated the learning effect. This was because they completed the second interface much faster once they finally understood the goal. We reworded the instructions to be more straightforward and added a concrete example of the expected output to avoid confusion on what they must do. We also found the initial task too simple to represent realistic, slightly more complicated scenarios. We modified the task to better reflect real-world complexity. Next, the spreadsheet template contained complex, irrelevant elements that distracted subjects. We removed these extraneous components to focus strictly on the scope of the tasks. 
+
+Finally, we decided that we would exclude completion time as a dependent variable for budgeting. Time was heavily influenced by the users' prior spreadsheet familiarity and variations in task interpretation, introducing unwanted variability into our data. Since our focus is on interface usability and user experience, we deprioritized time as a metric to focus on measures that more directly reflect these aspects. However, future iterations with more controlled conditions can incorporate time-based analysis. Most of the deatils on the changes were covered on the experimental description section.
+
+Fortunately, other aspects of the protocol performed exactly as intended. The overall session length averaged 50 minutes, which aligned with our expectations. Furthermore, our study instruments, specifically the post-task questionnaires and the NASA-TLX scale proved highly useful. They effectively captured clear, qualitative feedback and opinions regarding the subjects' experiences with the interfaces.
+\newline
+
+
+\subsection{Step 6: Experiment Report}
+\textbf{The following pages contain our full experiment report.}
+\includepdf[pages=-]{MS4.pdf}
+
+\newpage
+
+\section{Part B: Final Project Conclusions, Recommendations, and Reflection}
+\subsection{Step 7: Final Conclusions and Recommendations}
+Reflecting on our design, we can conclude that both our budgeting and ideation interface require many adjustments, but our overall design being validated. First, for budgeting, our overall design that focused on the automated auto-split, along with the check boxes to select members was liked by almost all participants. One design flaw encountered within budgeting was that editing expense distributions after creating the expense was not possible; some participants made the mistake of inputting the wrong value and had to recreate the expense from scratch in order to finish the task. Several noted they had “no way to edit” or “couldn’t go back,” which affected their experience. 
+\newline
+\\ \indent
+For ideation, many participants found the swiping feature enjoyable and novel. Furthermore, they found the organized list of ideas, along with the filters, easy to understand and parse information from. They described the app as having everything “in one place,” while group chat required them to “scroll and keep track.” One major adjustment that our design can incorporate is adding some sort of discussion forum or comment section for each idea; many participants pointed out that group chats allow constant discussions between members, which our application alone does not provide. 
+\newline
+\\ \indent More details are covered on our experiment report; specifically, the "Interpretation of Results", "Design Implications", and "Conclusion".
+
+\vspace{10pt}
+
+\subsection{Step 8: Design and Evaluation Process Reflection}
+
+User participation helped clarify our goals and adjust our design direction. The interviews conducted in Milestone 2 taught us that tools such as spreadsheets and group chats are often used in the process of planning and managing group travel information. In addition, they clearly identified pet peeves and common work required in the travel process. For example, common problems that were introduced were using spreadsheets to manually manage and maintain expenses from the trip, and the lack of engagement when coming up with ideas and making final decisions. By prioritizing key issues that actual users face, we were able to us to narrow our scope down to enhancing user experience for budgeting and ideation processes. 
+\newline
+
+Being able to do a walkthrough using our low fidelity prototype assisted in finding any potential bottlenecks and make necessary changes prior to the experiment with actual users. This step helped us to put ourselves into the target users' shoes and find bottlenecks of our application. Through this process, we were able to modify and verify our initial design, focusing more on user experience rather than just the solution to our aimed problems. Our updated changes were then applied for our medium fidelity prototype which was used in our experiments. 
+\newline 
+
+Overall, outside of some of the issues we listed in our report, we would say the methods chosen for our evaluation helped us achieve what we were looking for. Choosing budgeting and ideation made sense from a user requirements sense since they were common issues talked about, and they were also the most useful topics in an experiment since they were more interactive and would thus yield more interesting results. Focusing on qualitative data also gave us higher-quality data that we could carry into improving our interface. That being said, the things we learned from our users were helpful but were often not entirely surprising. For example, we knew that it would be hard for users to switch to another app, as humans are creatures of habit.
+
+\newpage
+
+\appendix
+\section{Experiment Report}
+\subsection{Blank Versions of Study Material}
+\subsubsection{Pre-Experiment Study}
+\begin{enumerate}
+    \item \textbf{What is your age?}
+
+    \item {\textbf{What is your gender?}
+        \begin{enumerate}
+            \item Male
+            \item Female
+            \item Non-binary/Prefer not to say
+        \end{enumerate}
+        
+    }
+
+    \item \textbf{What is your current major/profession?}
+
+    \item {\textbf{In the past 2 years, approximately how many group trips (involving 3 or more people) have you participated in?}
+        \begin{enumerate}
+            \item 1-2 
+            \item 3-5
+            \item 6+
+        \end{enumerate}
+        
+    }
+
+    \item {\textbf{How would you rate your overall proficiency with spreadsheet software (e.g., Google Sheets, Microsoft Excel)?}
+        \begin{enumerate}
+            \item Beginner (I rarely use them or only do basic data entry)
+            \item Intermediate (I comfortably use basic formulas like SUM or AVERAGE)
+            \item Advanced (I regularly use complex formulas, pivot tables, or macros)
+        \end{enumerate}
+        
+    }
+
+    \item {\textbf{When planning activities or making decisions in a group chat (e.g., Telegram, iMessage, WhatsApp), how often do you use built-in polling/voting features?}
+        \begin{enumerate}
+            \item Frequently (Almost every time a group decision needs to be made)
+            \item Occasionally (Sometimes, for major decisions)
+            \item Rarely (We usually just type out our votes/opinions)
+            \item Never (I have never used a group chat poll)
+            
+        \end{enumerate}
+        
+    }
+
+    
+\end{enumerate}
+
+\newpage
+
+\subsubsection{Post-Task and General Questionnaires}
+\paragraph{General Questions: }
+\begin{enumerate}
+    \item Now that you’ve used both sets of tools, what are your immediate thoughts on how they are compared? 
+    \item If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why? 
+    
+\end{enumerate}
+
+\paragraph{Budgeting Task Questions: }
+\begin{enumerate}
+    \item Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app? 
+    \item Did you feel confident that the final totals were correct in both interfaces? Why or why not? 
+    \item What was the most frustrating part of using the spreadsheet?
+    \item What was the most frustrating part of using our prototype? 
+    \item Was there anything you wanted to do in either interface that you couldn’t figure out how to do easily? 
+\end{enumerate}
+
+\paragraph{Ideation Task Questions: }
+\begin{enumerate}
+    \item How did our prototype change the way you thought about the ideas, compared to just clicking a poll in a chat? 
+    \item When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?
+    \item What was the most frustrating part of using the poll in a group chat?
+    \item What was the most frustrating part of using our prototype?
+    \item Did the chat environment feel more natural for planning, or did you prefer using our prototype? Why?
+\end{enumerate}
+
+\setlist[itemize]{label=$\bullet$}
+
+\newpage
+
+\subsubsection{Budgeting Scenarios}
+\paragraph{(Spreadsheet): Graduation Trip to Montreal}
+\begin{itemize}
+    \item \textbf{Context:} You went on a graduation trip to Montreal with four friends (Jamie, Casey, Morgan, and Riley). During the trip, your group divided up the payment responsibilities.
+    
+    \item \textbf{Expenses to Input:}
+    \begin{itemize}
+        \item You paid for the round-trip train tickets: \$538.92
+        \item Jamie paid for group lunch: \$223.35
+        \item Jamie paid for the Airbnb booking: \$1245.50
+        \item Casey paid for the group dinners: \$312.44
+    \end{itemize}
+    
+    \item \textbf{The Distribution Rule:} Riley arrived late and did not attend the group dinners. Therefore, \textbf{Riley is excluded from the dinner expense split}. All other expenses are split evenly among everyone who participated.
+    
+    \item \textbf{Task:} Input these four expenses into the app, and identify exactly how much \textbf{you owe and you are owed} by each member.
+    \begin{itemize}
+        \item \hl{Refer to example for what you need to find out E.g.,}
+        \begin{itemize}
+            \item \textbf{You owe:}
+            \begin{itemize}
+                \item \$10 to Jamie
+                \item \$39.21 to Casey
+                \item \$40.23 to Morgan
+                \item \$60.32 to Riley
+            \end{itemize}
+            \item \textbf{You are owed:}
+            \begin{itemize}
+                \item \$30 from Jamie
+                \item \$25.21 from Casey
+                \item \$22.23 from Morgan
+                \item \$12.32 from Riley
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\paragraph{(Budget Application Interface): Graduation Trip to Banff}
+\begin{itemize}
+    \item \textbf{Context:} You went on a graduation trip to Banff with four friends (Alex, Sam, Taylor, and Jordan). During the trip, your group divided up the payment responsibilities.
+    
+    \item \textbf{Expenses to Input:}
+    \begin{itemize}
+        \item You paid for the flight tickets: \$542.18
+        \item Alex paid for the car rental: \$330.96
+        \item Alex paid for the cabin rental: \$1234.75
+        \item Sam paid for the shared groceries: \$301.22
+    \end{itemize}
+    
+    \item \textbf{The Distribution Rule:} Taylor has dietary restrictions and did not eat the shared groceries. Therefore, \textbf{Taylor is excluded from the grocery expense} split. All other expenses are split evenly among everyone who participated.
+    
+    \item \textbf{Task:} Input these three expenses into the app, and identify exactly how much \textbf{you owe and you are owed} by each member.
+    \begin{itemize}
+        \item \hl{Refer to example for what you need to find out E.g.,}
+        \begin{itemize}
+            \item You \textbf{owe}:
+            \begin{itemize}
+                \item \$10 to Alex
+                \item \$39.21 to Sam
+                \item \$40.23 to Taylor
+                \item \$60.32 to Jordan
+            \end{itemize}
+            \item You are \textbf{owed}:
+            \begin{itemize}
+                \item \$30 from Alex
+                \item \$25.21 from Sam
+                \item \$22.23 from Taylor
+                \item \$12.32 from Jordan
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Ideation Scenarios}
+\paragraph{(Telegram Poll): Planning a Trip to Seoul}
+\begin{itemize}
+    \item \textbf{Scenario:} Imagine a scenario where you and your four friends are planning a trip to Seoul. You are currently in a Telegram group chat and are deciding on activities and ideas for the trip.
+    \item \textbf{Setup:} The Telegram group chat consists of 10 separate ``polls'' that represent different activities/ideas. The chat also includes discussion and messages from your group members about these activities as well.
+    \item \textbf{Goal:} Your goal is to navigate through the chat and cast your own, genuine personal vote (``Yes'' or ``No/Skip'') for all 10 activities/ideas. Once you have finished voting, let us know.
+\end{itemize}
+
+\paragraph{(Ideation Application Interface): Planning a Trip to Tokyo}
+\begin{itemize}
+    \item \textbf{Scenario:} Imagine a scenario where you and your four friends are planning a trip to Tokyo. You are currently using a dedicated travel application to decide on activities and ideas for the trip.
+    \item \textbf{Setup:} The application's ideation feature consists of 10 separate ``idea cards'' for different activities/ideas. Each card includes a brief description from your group members about the activity.
+    \item \textbf{Goal:} Your goal is to navigate through the interface and cast your own, genuine personal vote (``Like'' or ``Skip'') for all 10 activities/ideas. Once you have finished voting, let us know.
+\end{itemize}
+
+\subsection{NASA-TLX Empty Assessment}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Appendix/TLX.png}
+    \caption{NASA Task Load Index}
+\end{figure}
+
+\section{Interface Screenshots}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Appendix/FinancialsPage.png}
+    \caption{Financial Application Example}
+    \label{fig:placeholder}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Spreadhseet1.png}
+    \caption{Financial Spreadsheet Example 1}
+    \label{fig:placeholder}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{images/Spreadsheet2.png}
+    \caption{Financial Spreadsheet Example 2}
+    \label{fig:placeholder}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{new-idea-swipe.png}
+    \caption{Ideation Application Example}
+    \label{fig:placeholder}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{Appendix/Group_Chat_Poll_Example.png}
+    \caption{Ideation Group Chat Example}
+    \label{fig:placeholder}
+\end{figure}
+
+\newpage
+
+\section{Experiment Data}
+
+\subsection{Pre-Survey Results}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{pre-experiment-survey.png}
+    \caption{Results of pre-experiment survey; names of participants are hidden}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsection{NASA-TLX Results}
+\subsubsection{Budgeting Results} 
+\noindent \textbf{Spreadsheet:}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Appendix/spreadsheet-tlx.png}
+    \caption{Participants' NASA-TLX scores for the spreadsheet budgeting task ('Total' representing the Raw-TLX score)}
+    \label{fig:placeholder}
+\end{figure}
+
+\noindent \textbf{Application:}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Appendix/application-tlx.png}
+    \caption{Participants' NASA-TLX scores for the application budgeting task}
+    \label{fig:placeholder}
+\end{figure}
+
+\newpage
+
+\subsubsection{Ideation Results} 
+\noindent \textbf{Group Chat:}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Appendix/group-chat-tlx.png}
+    \caption{Participants' NASA-TLX scores for the group chat ideation task}
+    \label{fig:placeholder}
+\end{figure}
+
+\noindent \textbf{Application:}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Appendix/application-ideation-tlx.png}
+    \caption{Participants' NASA-TLX scores for the application ideation task}
+    \label{fig:placeholder}
+\end{figure}
+
+\newpage
+
+\section{Post-Task Questionnaires}
+\textbf{Note: This section consists of notes that were written by one of the experimenters while the participants answers each question; these are not raw transcripts of the questionnaires.}
+\subsection{Participant 1:}
+\paragraph{Budgeting Questions}
+\begin{enumerate}
+    \item \textbf{Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app?}
+    \begin{itemize}
+        \item App was easier $\rightarrow$ had checkboxes. Clicked it
+        \begin{itemize}
+            \item Auto did the math
+            \item Mentally she had to do on her own
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Did you feel confident that the final totals were correct in both interfaces? Why or why not?}
+    \begin{itemize}
+        \item More confident in app, same reasons
+    \end{itemize}
+
+    \item \textbf{What was the most frustrating part of using the spreadsheet?}
+    \begin{itemize}
+        \item Spreadsheet error with spreadsheet
+    \end{itemize}
+
+    \item \textbf{What was the most frustrating part of using the app?}
+    \begin{itemize}
+        \item No editing and not being able to go back if there was an error
+    \end{itemize}
+
+    \item \textbf{Was there anything you wanted to do in either interface that you couldn't figure out how to do easily?}
+    \begin{itemize}
+        \item Editing, deleting – in the app
+        \item In the spreadsheet – scrolling wishing whoever had been paid would have been cleared
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Ideation Task Questions}
+
+\begin{enumerate}
+    \item \textbf{How did the app change the way you thought about the ideas, compared to just clicking a poll in a chat?}
+    \begin{itemize}
+        \item I liked descriptions.. Swayed me with the garden
+    \end{itemize}
+
+    \item \textbf{When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?}
+    \begin{itemize}
+        \item Chat $\rightarrow$ had to scroll and keep track
+        \item App $\rightarrow$ sort w/ filter
+    \end{itemize}
+
+    \item \textbf{What was the most frustrating part of using the poll in a group chat?}
+    \begin{itemize}
+        \item Having to scroll to see what each person said (especially even between messages)
+    \end{itemize}
+
+    \item \textbf{What was the most frustrating part of using the app?}
+    \begin{itemize}
+        \item Hard to tell whether swipe fully swiped
+    \end{itemize}
+
+    \item \textbf{Did the chat environment feel more natural for planning, or did you prefer using the app? Why?}
+    \begin{itemize}
+        \item I liked app for the ideas
+        \begin{itemize}
+            \item It was easier to use for sorting
+        \end{itemize}
+        \item But chat more natural because its what i usually use
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{General Questions}
+
+\begin{enumerate}
+    \item \textbf{Now that you’ve used both sets of tools, what are your immediate thoughts on how they are compared?}
+    \begin{itemize}
+        \item I like the app and how things are laid out. Its very straightforward. Nothing i used hard to find
+        \item I like spreadsheet best because of all the options.. customizable
+        \begin{itemize}
+            \item But app more ``intuitive''
+        \end{itemize}
+        \item Group chat worst
+    \end{itemize}
+
+    \item \textbf{If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why?}
+    \begin{itemize}
+        \item Group chat and then a spreadsheet
+        \item Why?
+        \begin{itemize}
+            \item Group chat easiest $\rightarrow$ already talking in a group chat.. Makes sense to keep things in there
+            \item Spreadsheet most familiar with.. And more customizability
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Participant 2:}
+\paragraph{Budgeting Task Questions}
+
+\begin{enumerate}
+    \item \textbf{Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app?}
+    
+    \begin{itemize}
+        \item Spreadsheet was easy based on numbers, if there's more spreadsheet is harder bc the app has a checkbox compared to distributing the percentages
+    \end{itemize}
+    
+    \item \textbf{Did you feel confident that the final totals were correct in both interfaces? Why or why not?}
+    
+    \begin{itemize}
+        \item Good, issues with final answer
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the spreadsheet?}
+    
+    \begin{itemize}
+        \item Error check flashing red as a ui issue
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item Not much
+    \end{itemize}
+    
+    \item \textbf{Was there anything you wanted to do in either interface that you couldn't figure out how to do easily?}
+    
+    \begin{itemize}
+        \item Forgot to put item names
+    \end{itemize}
+\end{enumerate}
+
+
+\paragraph{Ideation Task Questions}
+
+\begin{enumerate}
+    \item \textbf{How did the app change the way you thought about the ideas, compared to just clicking a poll in a chat?}
+    
+    \begin{itemize}
+        \item Similar, for polling there's off topic things with group chats, for swiping was fun and felt like tinder, and the list of ideas instead of polls since have to swipe
+    \end{itemize}
+    
+    \item \textbf{When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?}
+    
+    \begin{itemize}
+        \item Similar thing with swiping instead of a filter on the app
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the poll in a group chat?}
+    
+    \begin{itemize}
+        \item No frustrations for both and task was pre simple
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item [N/A]
+    \end{itemize}
+    
+    \item \textbf{Did the chat environment feel more natural for planning, or did you prefer using the app? Why?}
+    
+    \begin{itemize}
+        \item With swiping u dont see the votes immediately but with telegram u see the results right away
+    \end{itemize}
+\end{enumerate}
+
+
+\paragraph{General Questions}
+
+\begin{enumerate}
+    \item \textbf{Now that you've used both sets of tools, what are your immediate thoughts on how they are compared?}
+    
+    \begin{itemize}
+        \item [N/A]
+    \end{itemize}
+    
+    \item \textbf{If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why?}
+    
+    \begin{itemize}
+        \item App first bc all in one place, second is spreadsheet since calculating the \% for each person, ideation easier to
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Participant 3:}
+\paragraph{Budgeting Task Questions}
+
+\begin{enumerate}
+    \item \textbf{Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app?}
+    
+    \begin{itemize}
+        \item excel, do the math itself to do percentages, for app its just a check box
+    \end{itemize}
+    
+    \item \textbf{Did you feel confident that the final totals were correct in both interfaces? Why or why not?}
+    
+    \begin{itemize}
+        \item for app more confident bc the excel spreadsheet results were not as clear bc of all the numbers and cells, app still confused bc confusing between owed and owe
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the spreadsheet?}
+    
+    \begin{itemize}
+        \item entering was easy but just parsing the numbers imprtance
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item not much frustration, easy to catch up
+    \end{itemize}
+    
+    \item \textbf{Was there anything you wanted to do in either interface that you couldn't figure out how to do easily?}
+    
+    \begin{itemize}
+        \item excel parsing
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Ideation Task Questions}
+
+\begin{enumerate}
+    \item \textbf{How did the app change the way you thought about the ideas, compared to just clicking a poll in a chat?}
+    
+    \begin{itemize}
+        \item telegram good bc the discussion, cant see when ur swiping immediately, specifically saying no to them instead of no to the idea, a pro and con since you can be influenced and not be influenced by the members
+    \end{itemize}
+    
+    \item \textbf{When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?}
+    
+    \begin{itemize}
+        \item app easy to find bc its all in the same place, telegram difficult since polls can be different words
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the poll in a group chat?}
+    
+    \begin{itemize}
+        \item a little busier (pins can be a limitation mentioned on our analysis)
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item simple
+    \end{itemize}
+    
+    \item \textbf{Did the chat environment feel more natural for planning, or did you prefer using the app? Why?}
+    
+    \begin{itemize}
+        \item never used app to plan, so either in person for group chat, app just more organized though but used to group chat kinda
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{General Questions}
+
+\begin{enumerate}
+    \item \textbf{Now that you've used both sets of tools, what are your immediate thoughts on how they are compared?}
+    
+    \begin{itemize}
+        \item after doing it, useful to have an app, swiping might be weird bc of the implementation
+    \end{itemize}
+    
+    \item \textbf{If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why?}
+    
+    \begin{itemize}
+        \item app,
+        \item excel they prefer lists instead of like calculations kinda
+        \item telegram to brainstorm ideas, put it in the app as a ``final say''
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Participant 4:}
+\paragraph{Budgeting Task Questions}
+
+\begin{enumerate}
+    \item \textbf{Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app?}
+    
+    \begin{itemize}
+        \item For expenses where i had to exclude people.. I got used in routine $\rightarrow$ so for the app i almost included them.. Because it was new
+        \item But excel i am familiar with.. So easier to remember.. Also did it second!
+    \end{itemize}
+    
+    \item \textbf{Did you feel confident that the final totals were correct in both interfaces? Why or why not?}
+    
+    \begin{itemize}
+        \item I was pretty confident for both
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the spreadsheet?}
+    
+    \begin{itemize}
+        \item I like the spreadsheet!
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item For the app, id like to see percentages in specific places instead of just the dollar (in the Pay Up section)
+    \end{itemize}
+    
+    \item \textbf{Was there anything you wanted to do in either interface that you couldn't figure out how to do easily?}
+    
+    \begin{itemize}
+        \item I think both were pretty straightforward
+    \end{itemize}
+\end{enumerate}
+
+
+\paragraph{Ideation Task Questions}
+
+\begin{enumerate}
+    \item \textbf{How did the app change the way you thought about the ideas, compared to just clicking a poll in a chat?}
+    
+    \begin{itemize}
+        \item Im used to on telegram/discord $\rightarrow$ multiple choice question of list of possible options
+        \begin{itemize}
+            \item Not necessarily multiple polls for one location.. Would be one poll for everything (like a select multiple)
+        \end{itemize}
+        \item App $\rightarrow$ i think the tinder was cool.. Never thought of it like that
+    \end{itemize}
+    
+    \item \textbf{When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?}
+    
+    \begin{itemize}
+        \item For the app pretty easy compared to telegram because all ordered
+        \item Poll $\rightarrow$ had to go through each
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the poll in a group chat?}
+    
+    \begin{itemize}
+        \item For the telegram $\rightarrow$ kinda weird because polls all over the place.. in between messages
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item For the app $\rightarrow$ swiping i got kinda confused about where to swipe for yes vs no
+    \end{itemize}
+    
+    \item \textbf{Did the chat environment feel more natural for planning, or did you prefer using the app? Why?}
+    
+    \begin{itemize}
+        \item Polls would make more sense to me because its the way its normally done.. Ive never had a tinder style thing
+        \begin{itemize}
+            \item ``But its cool!''
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{General Questions}
+
+\begin{enumerate}
+    \item \textbf{Now that you've used both sets of tools, what are your immediate thoughts on how they are compared?}
+    
+    \begin{itemize}
+        \item For the budgeting app interface, i feel its more user friendly than spreadsheet.. Easier to get information you need
+        \item For the voting $\rightarrow$ i think normal poll would be fine
+    \end{itemize}
+    
+    \item \textbf{If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why?}
+    
+    \begin{itemize}
+        \item If there was less confusion with inputting pay records/setting it up i would opt for the budgeting app because its easier for people to understand it.. But voting i would definitely just go for polls. Im just used to it! Otherwise i have to explain what the tinder thing is to other people
+        \begin{itemize}
+            \item ``Just give me a poll bro.. i gotta swipe?''
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Participant 5:}
+\paragraph{Budgeting Task Questions}
+
+\begin{enumerate}
+    \item \textbf{Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app?}
+    
+    \begin{itemize}
+        \item Spreadsheet $\rightarrow$ have to manually divide distributions/percentages and then input them in the spreadsheet
+        \item App $\rightarrow$ uncheck \& split evenly
+        \item App was quicker and easier
+    \end{itemize}
+    
+    \item \textbf{Did you feel confident that the final totals were correct in both interfaces? Why or why not?}
+    
+    \begin{itemize}
+        \item More confident in app
+        \begin{itemize}
+            \item More organized
+            \item Directly targeted towards the budgeting tasks
+        \end{itemize}
+        \item Felt confident in both
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the spreadsheet?}
+    
+    \begin{itemize}
+        \item Have to scroll horizontally see things not shown on the page
+        \item Manual calculation and input
+        \item Can't see who paid and how much was paid off
+        \item Used to using spreadsheets so no huge frustrations.
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item No way of editing, removing changes done
+        \item Accidental inputs should be able to be fixed.
+    \end{itemize}
+    
+    \item \textbf{Was there anything you wanted to do in either interface that you couldn't figure out how to do easily?}
+    
+    \begin{itemize}
+        \item n/a
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Ideation Task Questions}
+
+\begin{enumerate}
+    \item \textbf{How did the app change the way you thought about the ideas, compared to just clicking a poll in a chat?}
+    
+    \begin{itemize}
+        \item The app was more intact, more organized view of ideas. Easy to vote.
+        \item Chat was messier, more clustered with messages, hard to scroll through.
+        \item Telegram can have messages and the poll together, but overall the app was better.
+    \end{itemize}
+    
+    \item \textbf{When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?}
+    
+    \begin{itemize}
+        \item Easy to find the most liked in the app, but the group chat was hard because they had to constantly scroll back and forth and compare.
+        \begin{itemize}
+            \item Would become worse if the group is bigger or if there were more ideas for the group chat.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the poll in a group chat?}
+    
+    \begin{itemize}
+        \item Texts are distracting, scrolling up and down comparing and remember other voting results.
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item Not much for now
+    \end{itemize}
+    
+    \item \textbf{Did the chat environment feel more natural for planning, or did you prefer using the app? Why?}
+    
+    \begin{itemize}
+        \item Prefer app more than a group chat
+        \item Group chat polls in the past $\rightarrow$ Not useful, at the end becomes a one person decision process.
+        \item App enforces group coordination.
+    \end{itemize}
+\end{enumerate}
+
+
+
+
+\paragraph{General Questions}
+
+\begin{enumerate}
+    \item \textbf{Now that you've used both sets of tools, what are your immediate thoughts on how they are compared?}
+    
+    \begin{itemize}
+        \item App would be useful to learn and use for budgeting than a spreadsheet.
+        \begin{itemize}
+            \item Spreadsheet has a higher learning curve, and can make more mistakes.
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why?}
+    
+    \begin{itemize}
+        \item Give the app a try (would ask the group if they would be fine using it)
+        \item Used to using spreadsheets (can quickly work on it)
+        \begin{itemize}
+            \item Sees it more as a calculator than a tracker
+            \item Convenient for one person dealing with all payments
+        \end{itemize}
+        \item App is more convenient when there are multiple payers.
+        \item Use an app to deal with ideation but for messages and sharing links to other resources, would use the group chat.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Participant 6:}
+\paragraph{Budgeting Task Questions}
+
+\begin{enumerate}
+    \item \textbf{Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app?}
+    
+    \begin{itemize}
+        \item app easy bc of checkbox, spreadsheet figure out the percentages
+    \end{itemize}
+    
+    \item \textbf{Did you feel confident that the final totals were correct in both interfaces? Why or why not?}
+    
+    \begin{itemize}
+        \item fine
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the spreadsheet?}
+    
+    \begin{itemize}
+        \item spreadsheet a bit annoying when using the mouse instead of phone felt seasier
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item not much
+    \end{itemize}
+    
+    \item \textbf{Was there anything you wanted to do in either interface that you couldn't figure out how to do easily?}
+    
+    \begin{itemize}
+        \item was fine
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Ideation Task Questions}
+
+\begin{enumerate}
+    \item \textbf{How did the app change the way you thought about the ideas, compared to just clicking a poll in a chat?}
+    
+    \begin{itemize}
+        \item App, ``knew'' what i was signing up more since a lot of GC is just words, bc of the pictures and descriptions
+    \end{itemize}
+    
+    \item \textbf{When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?}
+    
+    \begin{itemize}
+        \item app was easier bc of the filtering, scrolling harder
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the poll in a group chat?}
+    
+    \begin{itemize}
+        \item creating polls was harder, random messages
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item see only ideas but not people's discussions
+    \end{itemize}
+    
+    \item \textbf{Did the chat environment feel more natural for planning, or did you prefer using the app? Why?}
+    
+    \begin{itemize}
+        \item app for decision making, tele felt unorganized bc of all messages
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{General Questions}
+
+\begin{enumerate}
+    \item \textbf{Now that you've used both sets of tools, what are your immediate thoughts on how they are compared?}
+    
+    \begin{itemize}
+        \item app was easy and structure for organization, not missing much
+    \end{itemize}
+    
+    \item \textbf{If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why?}
+    
+    \begin{itemize}
+        \item app especially fo the expenses part, app good for ideation but have a way for communication
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Participant 7:}
+\paragraph{Budgeting Task Questions}
+
+\begin{enumerate}
+    \item \textbf{Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app?}
+    
+    \begin{itemize}
+        \item excluding easier on interface bc of the checkbox compared to entering the \%s
+    \end{itemize}
+    
+    \item \textbf{Did you feel confident that the final totals were correct in both interfaces? Why or why not?}
+    
+    \begin{itemize}
+        \item app bc only the total instead of the right percentages, can make easier mistakes
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the spreadsheet?}
+    
+    \begin{itemize}
+        \item bit of typing,
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item no editing
+    \end{itemize}
+    
+    \item \textbf{Was there anything you wanted to do in either interface that you couldn't figure out how to do easily?}
+    
+    \begin{itemize}
+        \item it was fine
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Ideation Task Questions}
+
+\begin{enumerate}
+    \item \textbf{How did the app change the way you thought about the ideas, compared to just clicking a poll in a chat?}
+    
+    \begin{itemize}
+        \item not ``change'' but less ``daunting''; poll system puts more stress bc ``casting a vote'' but swiping feel more like ``my preference'' rather than influencing others bc of the other chats, feels
+    \end{itemize}
+    
+    \item \textbf{When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?}
+    
+    \begin{itemize}
+        \item easier to see on app bc its already filtered, telegram have to parse the ``poll'' since its a percentage, ``2 people said no'' instead of just ``5 likes'', puts more of a positive spin, the fact that 2 people didnt like the ideas
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the poll in a group chat?}
+    
+    \begin{itemize}
+        \item scrolling to find each vote,
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item not much
+    \end{itemize}
+    
+    \item \textbf{Did the chat environment feel more natural for planning, or did you prefer using the app? Why?}
+    
+    \begin{itemize}
+        \item app just because GCs has too much ideas between and too spread out, too unstructured since people interjecting ideas
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{General Questions}
+
+\begin{enumerate}
+    \item \textbf{Now that you've used both sets of tools, what are your immediate thoughts on how they are compared?}
+    
+    \begin{itemize}
+        \item in general app like more bc all in one place, and pre-structured, ``gameiftys wth the swiping'' takes a lot of the stress out
+    \end{itemize}
+    
+    \item \textbf{If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why?}
+    
+    \begin{itemize}
+        \item if knew of the app would actually use it for budgeting, but for figuring out where to go would use the group chat to elaborate more in the ideas
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Participant 8:}
+\paragraph{Budgeting Task Questions}
+
+\begin{enumerate}
+    \item \textbf{Walk me through your thought process when you had to exclude a member from a shared expense. How did that feel in the spreadsheet versus the app?}
+    
+    \begin{itemize}
+        \item easier on app is just unchecking, spreadsheet percentage of everyone
+    \end{itemize}
+    
+    \item \textbf{Did you feel confident that the final totals were correct in both interfaces? Why or why not?}
+    
+    \begin{itemize}
+        \item no difference
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the spreadsheet?}
+    
+    \begin{itemize}
+        \item inputting every single value
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item no real issues
+    \end{itemize}
+    
+    \item \textbf{Was there anything you wanted to do in either interface that you couldn't figure out how to do easily?}
+    
+    \begin{itemize}
+        \item pretty fine
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{Ideation Task Questions}
+
+\begin{enumerate}
+    \item \textbf{How did the app change the way you thought about the ideas, compared to just clicking a poll in a chat?}
+    
+    \begin{itemize}
+        \item dont have to scroll up and down
+    \end{itemize}
+    
+    \item \textbf{When I asked you to find the top two most liked and least liked ideas, how did you go about finding that information in the chat versus the app?}
+    
+    \begin{itemize}
+        \item dont have to scroll up and down
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the poll in a group chat?}
+    
+    \begin{itemize}
+        \item dont have to scroll up and down
+    \end{itemize}
+    
+    \item \textbf{What was the most frustrating part of using the app?}
+    
+    \begin{itemize}
+        \item nothing
+    \end{itemize}
+    
+    \item \textbf{Did the chat environment feel more natural for planning, or did you prefer using the app? Why?}
+    
+    \begin{itemize}
+        \item prefer felt easier
+    \end{itemize}
+\end{enumerate}
+
+\paragraph{General Questions}
+
+\begin{enumerate}
+    \item \textbf{Now that you've used both sets of tools, what are your immediate thoughts on how they are compared?}
+    
+    \begin{itemize}
+        \item [N/A]
+    \end{itemize}
+    
+    \item \textbf{If you were going on a trip next weekend with your friends, which combination of tools would you realistically choose to use and why?}
+    
+    \begin{itemize}
+        \item past tools so not the app bc boomer friend and not used to new things
+        \item its hard to move on to new things
+        \item would use app but issue of getting everyone to use it
+    \end{itemize}
+\end{enumerate}
+\end{document}
